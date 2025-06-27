@@ -1,7 +1,6 @@
-// this models define the new products coming into stock
 const { DataTypes } = require('sequelize');
 const db = require('../configuration/db');
-const DetalleOrdenCompra = require('./detalleOrdenCompra');
+const OrdenCompra = require('./ordenCompra'); 
 
 const DetalleRecepcion = db.define('DetalleRecepcion', {
     id: {
@@ -30,24 +29,29 @@ const DetalleRecepcion = db.define('DetalleRecepcion', {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.NOW
+    },
+    numero_orden: {  
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: OrdenCompra, 
+            key: 'numero_orden' //FK
+        }
     }
 }, {
     tableName: 'detalles_recepcion',
     timestamps: true,
-   
+})
+
+//(usando numero_orden)
+DetalleRecepcion.belongsTo(OrdenCompra, {
+    foreignKey: 'numero_orden', 
+    targetKey: 'numero_orden'   
 });
 
-// Relación con DetalleOrdenCompra
-DetalleRecepcion.belongsTo(DetalleOrdenCompra, {
-    foreignKey: {
-        name: 'detalle_orden_id',
-        allowNull: false
-    },
-    onDelete: 'RESTRICT' // Evitamos borrar si hay recepciones
-});
-
-DetalleOrdenCompra.hasMany(DetalleRecepcion, {
-    foreignKey: 'detalle_orden_id'
+OrdenCompra.hasMany(DetalleRecepcion, {
+    foreignKey: 'numero_orden',
+    sourceKey: 'numero_orden'
 });
 
 module.exports = DetalleRecepcion;
