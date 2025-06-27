@@ -1,6 +1,6 @@
 // This file defines the OrdenCompra model for managing purchase orders in the system.
 const { DataTypes } = require('sequelize');
-const db = require('../configuraciones/conexion');
+const db = require('../configuraciones/db');
 const Proveedor = require('./proveedor');
 const Usuario = require('./usuario');
 
