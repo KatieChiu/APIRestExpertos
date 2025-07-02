@@ -1,4 +1,5 @@
 const sequelize = require('sequelize'); // Importamos sequelize
+require('dotenv').config()
 
 const db = new sequelize( // Creamos una nueva instancia de sequelize
     process.env.bd, // Nombre de la base de datos
@@ -7,7 +8,7 @@ const db = new sequelize( // Creamos una nueva instancia de sequelize
     {
         host: 'localhost',
         dialect: 'mysql',
-        port: 3306,
+        port: 3306, // Puerto de la base de datos
     }
 );
 
