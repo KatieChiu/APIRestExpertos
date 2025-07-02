@@ -1,5 +1,5 @@
 // models/venta.js
-const { DataTypes } = require('sequelize');
+/*const { DataTypes } = require('sequelize');
 const db = require('../configuraciones/db');
 const Usuario = require('./usuario');
 
@@ -65,4 +65,4 @@ Usuario.hasMany(Venta, {
     foreignKey: 'usuario_id'
 });
 
-module.exports = Venta;
+module.exports = Venta;*/

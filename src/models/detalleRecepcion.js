@@ -1,4 +1,4 @@
-const { DataTypes } = require('sequelize');
+/*const { DataTypes } = require('sequelize');
 const db = require('../configuration/db');
 const OrdenCompra = require('./ordenCompra'); 
 
@@ -54,4 +54,4 @@ OrdenCompra.hasMany(DetalleRecepcion, {
     sourceKey: 'numero_orden'
 });
 
-module.exports = DetalleRecepcion;
+module.exports = DetalleRecepcion;*/

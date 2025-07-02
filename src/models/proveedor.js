@@ -1,4 +1,4 @@
-const {DataTypes} = require('sequelize');
+/*const {DataTypes} = require('sequelize');
 const sequelize = require('../configuration/db');
 const ordenCompra= require('./ordenCompra'); 
 const Proveedor = sequelize.define('Proveedor', {
@@ -19,4 +19,4 @@ const Proveedor = sequelize.define('Proveedor', {
 })
 
 
-module.exports = Proveedor;
+module.exports = Proveedor;*/
