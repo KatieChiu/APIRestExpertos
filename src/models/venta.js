@@ -1,18 +1,14 @@
 // models/venta.js
 const { DataTypes } = require('sequelize');
-const db = require('../configuraciones/db');
-const Usuario = require('./usuario');
-
+const db = require('../configuration/db');
+//const Usuario = require('./users');
+const Producto = require('./producto');
 const Venta = db.define('Venta', {
-    id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-        allowNull: false,
-        unique: true,
-    },
+    //cambiamos PK a numero_factura
+    
     numero_factura: {
         type: DataTypes.STRING(20),
+        primaryKey: true,
         allowNull: false,
         unique: true
     },
@@ -53,16 +49,19 @@ const Venta = db.define('Venta', {
     timestamps: true
 });
 
-// Relación con Usuario
-Venta.belongsTo(Usuario, {
+Venta.belongsTo(Producto, {
     foreignKey: {
-        name: 'usuario_id',
+        name: 'producto_id',
         allowNull: false
     }
 });
 
-Usuario.hasMany(Venta, {
-    foreignKey: 'usuario_id'
+Producto.hasMany(Venta, {
+    foreignKey: 'producto_id'
 });
+// Relación con Usuario
+//Venta.belongsTo(Usuario, {foreignKey: {name: 'usuario_id', allowNull: false}});
+
+//Usuario.hasMany(Venta, {foreignKey: 'usuario_id'});
 
 module.exports = Venta;
