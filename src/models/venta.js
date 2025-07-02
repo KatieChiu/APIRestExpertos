@@ -4,17 +4,12 @@ const db = require('../configuraciones/db');
 const Usuario = require('./usuario');
 
 const Venta = db.define('Venta', {
-    id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-        allowNull: false,
-        unique: true,
-    },
+    
     numero_factura: {
         type: DataTypes.STRING(20),
         allowNull: false,
-        unique: true
+        unique: true,
+        primaryKey: true
     },
     fecha: {
         type: DataTypes.DATE,
@@ -54,15 +49,6 @@ const Venta = db.define('Venta', {
 });
 
 // Relación con Usuario
-Venta.belongsTo(Usuario, {
-    foreignKey: {
-        name: 'usuario_id',
-        allowNull: false
-    }
-});
 
-Usuario.hasMany(Venta, {
-    foreignKey: 'usuario_id'
-});
 
 module.exports = Venta;
