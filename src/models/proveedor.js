@@ -3,14 +3,13 @@ const db = require('../configuration/db');
 
 
 const Proveedor = db.define('Proveedor', {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },  
+
   proveedor_id: {
-    type: DataTypes.STRING(36),
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
     primaryKey: true,
+    unique: true,
+    allowNull: false,
     
   },   
   nombre: {
