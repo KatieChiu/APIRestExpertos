@@ -1,0 +1,23 @@
+{
+  "name": "apirestexpertos",
+  "version": "1.0.0",
+  "description": "API integrable a negocios con procesos de venta compra",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^17.0.0",
+    "express": "^5.1.0",
+    "express-validator": "^7.2.1",
+    "morgan": "^1.10.0",
+    "mysql": "^2.18.1",
+    "mysql2": "^3.14.1",
+    "nodemailer": "^7.0.4",
+    "sequelize": "^6.37.7"
+  }
+}
