@@ -59,9 +59,6 @@ Producto.belongsTo(CategoriaProducto, {
     }
 });
 
-CategoriaProducto.hasMany(Producto, {
-    foreignKey: 'categoria_id'
-});
 
 // Relación con Proveedor 
 /*Producto.belongsTo(Proveedor, {

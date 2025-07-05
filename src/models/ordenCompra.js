@@ -1,8 +1,9 @@
 // This file defines the OrdenCompra model for managing purchase orders in the system.
 /*const { DataTypes } = require('sequelize');
 const db = require('../configuraciones/db');
+
 const Proveedor = require('./proveedor');
-const Usuario = require('./usuario');
+//const Usuario = require('./users');
 
 const OrdenCompra = db.define('OrdenCompra', {
     id: {
@@ -58,20 +59,7 @@ OrdenCompra.belongsTo(Proveedor, {
     }
 });
 
-Proveedor.hasMany(OrdenCompra, {
-    foreignKey: 'proveedor_id'
-});
+//agg relacion con usuario
 
-// Relación con Usuario
-OrdenCompra.belongsTo(Usuario, {
-    foreignKey: {
-        name: 'usuario_id',
-        allowNull: false
-    }
-});
-
-Usuario.hasMany(OrdenCompra, {
-    foreignKey: 'usuario_id'
-});
 
 module.exports = OrdenCompra;*/

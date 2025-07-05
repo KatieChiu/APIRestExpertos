@@ -14,7 +14,6 @@ const CategoriaProducto = db.define('CategoriaProducto', {
     },
     categoria_id: { 
         type: DataTypes.STRING(20),
-       // primaryKey: true, probando corregir el put de categoria
         allowNull: false,
         unique: true,
     },
