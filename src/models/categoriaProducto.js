@@ -5,15 +5,10 @@ const Producto = require('./producto');
 const e = require('express');
 
 const CategoriaProducto = db.define('CategoriaProducto', {
-    id: { 
-        type: DataTypes.INTEGER,
-        autoIncrement: true,       
-        primaryKey: true,
-        allowNull: false,
-        unique: true,
-    },
-     categoria_id: { 
-        type: DataTypes.STRING(36),    
+    
+    categoria_id: { 
+        type: DataTypes.STRING(36),
+        primaryKey: true,    
         allowNull: false,
         unique: true,
     },

@@ -1,82 +1,148 @@
-const  ventas  = require('../models/venta'); // o como sea que exportes el modelo
+const Venta = require('../models/venta');
+const DetalleVenta = require('../models/detalleVenta');
+const Producto = require('../models/producto');
+const { validationResult } = require('express-validator');
+const db = require('../configuration/db');
 
-const {validationResult}= require('express-validator');
+// Listar todas las ventas
 exports.listar = async (req, res) => {
-    try {
-        const ventas = await ventas.findAll();
-        res.json(ventas);
-    } catch (error) {
-        console.error("Error al listar las ordenes de venta:", error);
-        res.status(500).json({ error: "Error al procesar la venta" });
-    }
-};
-
-
-exports.guardar = async (req, res) => {
-  const validacion = validationResult(req);
-
-  if (validacion.errors.length > 0) {
-    console.log(validacion.errors);
-    return res.status(400).json(validacion.errors);
-  }
-
-  const { numero_factura,total,tipo_pago, estado } = req.body;
-      console.log("Datos recibidos para crear una nueva orden de compra:", req.body);
   try {
-    const newsales = await ventas.create({
-        numero_factura,
-        total,
-        tipo_pago,
-        estado
+    const ventas = await Venta.findAll({
+      include: DetalleVenta
     });
-    res.status(201).json(newsales);
+    res.json(ventas);
   } catch (error) {
-    console.error("Error al proesar venta:", error);
-    res.status(500).json({ error: "Error al procesar venta" });
+    console.error("Error al listar ventas:", error);
+    res.status(500).json({ error: "Error al obtener ventas" });
   }
-}
-exports.editar = async (req, res) => {
-    const errores = validationResult(req);
-    if (!errores.isEmpty()) {
-        console.log("Errores de validación en editar:", errores.array());
-        return res.status(400).json(errores.array());
-    }
-
-    const { numero_factura } = req.params;
-    const { total, tipo_pago, estado } = req.body;
-
-    try {
-        const sales = await ventas.findByPk(numero_factura); 
-        console.log(sales);
-        if (!sales) {
-            return res.status(404).json({ mensaje: 'orden no encontrada' });
-        }
-
-       
-        await sales.save();
-
-        console.log("Datos actualizados para orden de compra:", numero_factura, total, tipo_pago, estado);
-
-        //return res.json({ mensaje: 'Carrera actualizada correctamente', carrera: carreraExistente });
-
-    } catch (error) {
-        console.error("Error al editar la orden:", error);
-        return res.status(500).json({ mensaje: 'Error ' });
-    }
 };
 
+// Crear nueva venta
+exports.guardar = async (req, res) => {
+  const errores = validationResult(req);
+  if (!errores.isEmpty()) {
+    return res.status(400).json(errores.array());
+  }
 
-exports.eliminar = async (req, res) => {
-    const errores = validationResult(req);
-    if (!errores.isEmpty()) {
-        console.log("Errores de validación en eliminar:", errores.array());
-        return res.status(400).json(errores.array());
+  const {
+    numero_factura,
+    fecha,
+    subtotal,
+    iva,
+    descuento,
+    total,
+    estado,
+    tipo_pago,
+    observaciones,
+    detalles
+  } = req.body;
+
+  const t = await db.transaction();
+  try {
+    const nuevaVenta = await Venta.create({
+      numero_factura,
+      fecha,
+      subtotal,
+      iva,
+      descuento,
+      total,
+      estado,
+      tipo_pago,
+      observaciones
+    }, { transaction: t });
+
+    for (const item of detalles) {
+      const producto = await Producto.findByPk(item.codigo_producto, { transaction: t });
+
+      if (!producto) throw new Error(`Producto ${item.codigo_producto} no encontrado`);
+      if (producto.stock_actual < item.cantidad) throw new Error(`Stock insuficiente para ${producto.nombre}`);
+
+      await DetalleVenta.create({
+        numero_factura,
+        codigo_producto: item.codigo_producto,
+        cantidad: item.cantidad,
+        precio_unitario: item.precio_unitario
+      }, { transaction: t });
+
+      producto.stock_actual -= item.cantidad;
+      await producto.save({ transaction: t });
     }
 
-    const { numero_orden } = req.body;
+    await t.commit();
+    res.status(201).json({ mensaje: 'Venta registrada con éxito', venta: nuevaVenta });
 
-    console.log("ID recibido para eliminar:", req.body);
-    res.json({
-        datos: `Registro con numero de factura : ${numero_factura} eliminado`,
+  } catch (error) {
+    await t.rollback();
+    console.error("Error al guardar venta:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Editar una venta (solo campos generales, no detalles ni stock)
+exports.editar = async (req, res) => {
+  const errores = validationResult(req);
+  if (!errores.isEmpty()) {
+    return res.status(400).json(errores.array());
+  }
+
+  const { numero_factura } = req.params;
+  const {
+    fecha,
+    subtotal,
+    iva,
+    descuento,
+    total,
+    estado,
+    tipo_pago,
+    observaciones
+  } = req.body;
+
+  try {
+    const venta = await Venta.findByPk(numero_factura);
+    if (!venta) return res.status(404).json({ error: "Venta no encontrada" });
+
+    await venta.update({
+      fecha, subtotal, iva, descuento, total, estado, tipo_pago, observaciones
     });
+
+    res.json({ mensaje: 'Venta actualizada con éxito', venta });
+  } catch (error) {
+    console.error("Error al editar venta:", error);
+    res.status(500).json({ error: "Error al editar venta" });
+  }
+};
+
+// Eliminar una venta y devolver stock
+exports.eliminar = async (req, res) => {
+  const { numero_factura } = req.body;
+
+  const t = await db.transaction();
+  try {
+    const venta = await Venta.findByPk(numero_factura, {
+      include: DetalleVenta,
+      transaction: t
+    });
+
+    if (!venta) return res.status(404).json({ error: "Venta no encontrada" });
+
+    // Devolver el stock
+    for (const detalle of venta.DetalleVenta) {
+      const producto = await Producto.findByPk(detalle.codigo_producto, { transaction: t });
+      if (producto) {
+        producto.stock_actual += detalle.cantidad;
+        await producto.save({ transaction: t });
+      }
+    }
+
+    await DetalleVenta.destroy({ where: { numero_factura }, transaction: t });
+    await venta.destroy({ transaction: t });
+
+    await t.commit();
+    res.json({ mensaje: 'Venta eliminada y stock restituido' });
+
+  } catch (error) {
+    await t.rollback();
+    console.error("Error al eliminar venta:", error);
+    res.status(500).json({ error: "Error al eliminar venta" });
+  }
 };

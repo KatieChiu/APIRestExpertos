@@ -3,12 +3,12 @@ const db = require('../configuration/db');
 
 
 const Proveedor = db.define('Proveedor', {
-
+  
   proveedor_id: {
     type: DataTypes.STRING(36),
     primaryKey: true,
     unique: true,
-    allowNull: false,
+    allowNull: false
     
   },   
   nombre: {
@@ -18,7 +18,8 @@ const Proveedor = db.define('Proveedor', {
     telefono: {
         type: DataTypes.STRING(20),
         allowNull: false
-    },
+    }
+ 
     
 })
 

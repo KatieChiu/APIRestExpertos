@@ -1,15 +1,15 @@
 // models/venta.js
 const { DataTypes } = require('sequelize');
-const db = require('../configuraciones/db');
-const Usuario = require('./usuario');
-
+const db = require('../configuration/db');
+//const Usuario = require('./users');
+const Producto = require('./producto');
 const Venta = db.define('Venta', {
     
     numero_factura: {
         type: DataTypes.STRING(20),
+        primaryKey: true,
         allowNull: false,
-        unique: true,
-        primaryKey: true
+        unique: true
     },
     fecha: {
         type: DataTypes.DATE,
@@ -42,13 +42,11 @@ const Venta = db.define('Venta', {
     },
     observaciones: {
         type: DataTypes.TEXT
-    }
+    },
 }, {
     tableName: 'ventas',
     timestamps: true
 });
-
-// Relación con Usuario
 
 
 module.exports = Venta;

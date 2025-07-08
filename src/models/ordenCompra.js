@@ -1,58 +1,57 @@
-
 const { DataTypes } = require('sequelize');
 const db = require('../configuration/db');
 const Proveedor = require('./proveedor');
-//const Usuario = require('./users');
 
 const OrdenCompra = db.define('OrdenCompra', {
-
-    numero_orden: {
-        type: DataTypes.STRING(20),
-        primaryKey: true,
-        allowNull: false,
-        unique: true
-    },
-    fecha_emision: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW
-    },
-    fecha_entrega_esperada: {
-        type: DataTypes.DATE
-    },
-    subtotal: {
-        type: DataTypes.DECIMAL(12, 2),
-        allowNull: false
-    },
-    iva: {
-        type: DataTypes.DECIMAL(12, 2),
-        allowNull: false
-    },
-    total: {
-        type: DataTypes.DECIMAL(12, 2),
-        allowNull: false
-    },
-    estado: {
-        type: DataTypes.ENUM('pendiente', 'parcial', 'completada', 'cancelada'),
-        defaultValue: 'pendiente'
-    },
-    observaciones: {
-        type: DataTypes.TEXT
+  numero_orden: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    allowNull: false,
+    unique: true
+  },
+  fecha_emision: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: DataTypes.NOW
+  },
+  fecha_entrega_esperada: DataTypes.DATE,
+  subtotal: {
+    type: DataTypes.DECIMAL(12, 2),
+    allowNull: false
+  },
+  iva: {
+    type: DataTypes.DECIMAL(12, 2),
+    allowNull: false
+  },
+  total: {
+    type: DataTypes.DECIMAL(12, 2),
+    allowNull: false
+  },
+  estado: {
+    type: DataTypes.ENUM('pendiente', 'parcial', 'completada', 'cancelada'),
+    defaultValue: 'pendiente'
+  },
+  observaciones: DataTypes.TEXT,
+  proveedor_id: {
+    type: DataTypes.STRING(36),
+    allowNull: false,
+    references: {
+      model: Proveedor,
+      key: 'proveedor_id'
     }
+  }
 }, {
-    tableName: 'ordenes_compra',
-    timestamps: true
+  tableName: 'ordencompra',
+  timestamps: true
 });
 
 // Relación con Proveedor
 OrdenCompra.belongsTo(Proveedor, {
-    foreignKey: {
-        name: 'proveedor_id',
-        allowNull: false
-    }
+  foreignKey: 'proveedor_id'
 });
+Proveedor.hasMany(OrdenCompra, {
+  foreignKey: 'proveedor_id'
 
-//agg relacion con usuario
-
+});
 
 module.exports = OrdenCompra;

@@ -1,11 +1,8 @@
-<<<<<<< Updated upstream
+
 const proveedor = require('../models/proveedor');
-=======
+
 const Proveedor = require('../models/proveedor');
-
->>>>>>> Stashed changes
-
-const {validatotionResult} = require('express-validator');
+const {validationResult} = require('express-validator');
 exports.listar = async (req, res) => {
     try {
         const proveedores = await proveedor.findAll();
@@ -15,8 +12,6 @@ exports.listar = async (req, res) => {
         res.status(500).json({ error: "Error al obtener proveedores" });
     }
 };
-<<<<<<< Updated upstream
-=======
 
 exports.guardar = async (req, res) => {
     const validacion = validationResult(req);
@@ -70,4 +65,28 @@ exports.editar = async (req, res) => {
         return res.status(500).json({ mensaje: 'Error ' });
     }
 };
->>>>>>> Stashed changes
+
+exports.eliminar = async (req, res) => {
+    const errores = validationResult(req);
+    if (!errores.isEmpty()) {
+        console.log("Errores de validación en eliminar:", errores.array());
+        return res.status(400).json(errores.array());
+    }
+
+    const { proveedor_id } = req.body;
+
+    try {
+        const proveedor = await Proveedor.findByPk(proveedor_id);
+        if (!proveedor) {
+            return res.status(404).json({ mensaje: 'Proveedor no encontrado' });
+        }
+
+        await proveedor.destroy();
+        res.json({ mensaje: 'Proveedor eliminado correctamente' });
+
+    } catch (error) {
+        console.error("Error al eliminar Proveedor:", error);
+        return res.status(500).json({ mensaje: 'Error al eliminar Proveedor' });
+    }
+};
+

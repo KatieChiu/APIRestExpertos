@@ -1,4 +1,4 @@
-// models/persona base
+// models/persona.js
 const { DataTypes } = require('sequelize');
 const db = require('../configuration/db');
 

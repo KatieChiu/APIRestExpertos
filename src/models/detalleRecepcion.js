@@ -41,7 +41,7 @@ const DetalleRecepcion = db.define('DetalleRecepcion', {
 }, {
     tableName: 'detalles_recepcion',
     timestamps: true,
-})
+});
 
 //(usando numero_orden)
 DetalleRecepcion.belongsTo(OrdenCompra, {
