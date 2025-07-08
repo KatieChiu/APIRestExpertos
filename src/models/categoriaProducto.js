@@ -1,19 +1,19 @@
 //modelo categoriaProducto.js con relacion a producto.js
 const { DataTypes } = require('sequelize'); 
-const db = require('../configuration/db'); 
-//const Producto = require('./producto');
-const express = require('express');
+const db = require('../configuration/db'); // Asegúrate de que la ruta sea correcta
+const Producto = require('./producto');
+const e = require('express');
 
 const CategoriaProducto = db.define('CategoriaProducto', {
-      id: { 
+    id: { 
         type: DataTypes.INTEGER,
-        autoIncrement: true,
+        autoIncrement: true,       
         primaryKey: true,
         allowNull: false,
         unique: true,
     },
-    categoria_id: { 
-        type: DataTypes.STRING(20),
+     categoria_id: { 
+        type: DataTypes.STRING(36),    
         allowNull: false,
         unique: true,
     },
@@ -33,6 +33,11 @@ const CategoriaProducto = db.define('CategoriaProducto', {
     tableName: 'categorias_productos',
     timestamps: true
 });
+
+
+
+
+
 
 
 module.exports = CategoriaProducto; 

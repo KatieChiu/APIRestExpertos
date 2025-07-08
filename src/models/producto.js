@@ -2,14 +2,14 @@
 const { DataTypes } = require('sequelize');
 const db = require('../configuration/db');
 const CategoriaProducto = require('./categoriaProducto');
-//const Proveedor = require('./proveedor');
+
 
 const Producto = db.define('Producto', {
     producto_id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
-        allowNull: false, 
+        allowNull: false,
         unique: true,
     },
     codigo: {
@@ -50,24 +50,8 @@ const Producto = db.define('Producto', {
     timestamps: true
 });
 
-// Relación con CategoriaProducto
-Producto.belongsTo(CategoriaProducto, {
-    foreignKey: {
-        name: 'categoria_id',
-        allowNull: false,
-        type: DataTypes.STRING(20)
-    }
-});
 
 
-// Relación con Proveedor 
-/*Producto.belongsTo(Proveedor, {
-    foreignKey: {
-        name: 'proveedor_id',
-        allowNull: false
-    }
-});
 
-Proveedor.hasMany(Producto, {foreignKey: 'proveedor_id'});*/
 
 module.exports = Producto;

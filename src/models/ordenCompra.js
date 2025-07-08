@@ -1,21 +1,14 @@
-// This file defines the OrdenCompra model for managing purchase orders in the system.
-/*const { DataTypes } = require('sequelize');
-const db = require('../configuraciones/db');
 
+const { DataTypes } = require('sequelize');
+const db = require('../configuration/db');
 const Proveedor = require('./proveedor');
 //const Usuario = require('./users');
 
 const OrdenCompra = db.define('OrdenCompra', {
-    id: {
-        type: DataTypes.INTEGER,
-        autoincrement: true,
-        primaryKey: true,
-        allowNull: false,
-        unique: true,
-    },
+
     numero_orden: {
-        type: DataTypes.INTEGER,
-        autoincrement: true,
+        type: DataTypes.STRING(20),
+        primaryKey: true,
         allowNull: false,
         unique: true
     },
@@ -62,4 +55,4 @@ OrdenCompra.belongsTo(Proveedor, {
 //agg relacion con usuario
 
 
-module.exports = OrdenCompra;*/
+module.exports = OrdenCompra;
