@@ -7,7 +7,7 @@ const validatePersona = [
         .isAlpha('es-ES').withMessage('El nombre solo puede contener letras'),
     body('segundoNombre')
         .optional()
-        .isLength({ min: 2, max: 15 }).withMessage('El primer nombre debe tener entre 2 y 15 caracteres')
+        .isLength({ min: 2, max: 15 }).withMessage('El segundo nombre debe tener entre 2 y 15 caracteres')
         .isAlpha('es-ES').withMessage('El nombre solo puede contener letras'),
     body('primerApellido')
         .optional()
