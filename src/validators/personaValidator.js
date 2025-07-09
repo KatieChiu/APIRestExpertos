@@ -20,7 +20,7 @@ const validatePersona = [
     body('numeroIdentificacion')
         .optional()
         .isLength({ min: 13, max: 13 }).withMessage('El número de identificación debe tener 13 caracteres')
-        .matches(/[0-9]/).withMessage('El número de identificación solo puede contener números'),
+        .matches(/^[0-9]+$/).withMessage('El número de identificación solo puede contener números'),
     body('telefono')    
         .optional()
         .isMobilePhone('es-HN').withMessage('El teléfono debe ser un número de teléfono móvil válido'),
