@@ -19,7 +19,7 @@ const validatePersona = [
         .isAlpha('es-ES').withMessage('El apellido solo puede contener letras'),
     body('numeroIdentificacion')
         .optional()
-        .isLength({ min: 13, max: 13 }).withMessage('El número de identificación debe tener 15 dígitos')
+        .isLength({ min: 13, max: 13 }).withMessage('El número de identificación debe tener 13 caracteres')
         .matches(/[0-9]/).withMessage('El número de identificación solo puede contener números'),
     body('telefono')    
         .optional()
