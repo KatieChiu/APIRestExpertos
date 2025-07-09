@@ -23,6 +23,11 @@ const Usuario = db.define('Usuario', {
     rol: {
         type: DataTypes.ENUM('admin', 'ventas', 'soporte', 'bodega'),
         allowNull: false
+    },
+    estado: {
+    type: DataTypes.ENUM('Activo', 'Inactivo', 'Bloqueado'),
+    allowNull: false,
+    defaultValue: 'Activo'
     }
 }, {
     tableName: 'usuarios',
