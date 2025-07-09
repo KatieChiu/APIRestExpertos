@@ -15,11 +15,14 @@ catch(error){
 const express = require('express');
 const app = express();
 const userRoutes = require('./routes/userRoutes');
+const personRoutes = require('./routes/personRoutes');
 
 connect();
 const port = 3000;
 app.use(express.json());
-app.use('/users', userRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/personas', personRoutes);
+
 app.listen(port, () => {
     console.log(`Servidor escuchando en http://localhost:${port}`);
 });
