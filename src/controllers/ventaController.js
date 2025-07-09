@@ -1,3 +1,4 @@
+//Katie Chiu
 const Venta = require('../models/venta');
 const DetalleVenta = require('../models/detalleVenta');
 const Producto = require('../models/producto');

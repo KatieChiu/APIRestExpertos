@@ -1,3 +1,4 @@
+//Katie Chiu
 const { validationResult } = require('express-validator');
 const ordenCompra = require('../models/ordenCompra'); // mayúscula para modelo
 const OrdenCompraDetalle = require('../models/ordenCompraDetalle'); // modelo detalle

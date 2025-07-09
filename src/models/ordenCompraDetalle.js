@@ -1,4 +1,5 @@
 // este modelo es para tener una compra con varios productos 
+//Katie Chiu
 const {DataTypes}= require('sequelize');
 const OrdenCompra = require('./ordenCompra');
 const Producto = require('./producto');
