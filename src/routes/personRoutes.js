@@ -9,13 +9,14 @@ const {
 } = require('../controllers/persona');
 
 const { 
-    validatePersona
-} = require('../validators/personaValidator');
+    validateCreatePerson,
+    validateUpdatePerson
+} = require('../validators/personValidator');
 
 const { handleValidationErrors } = require('../middlewares/validationMiddleware');
 
-router.post('/', validatePersona, handleValidationErrors, createPersona);
-router.put('/:id', validatePersona, handleValidationErrors, updatePersona);
+router.post('/', handleValidationErrors, validateCreatePerson, createPersona);
+router.put('/:id', handleValidationErrors, validateUpdatePerson , updatePersona);
 router.get('/', getAllPersonas);
 router.get('/:id', getPersonaById);
 router.delete('/:id', deletePersona);

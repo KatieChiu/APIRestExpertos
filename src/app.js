@@ -21,7 +21,7 @@ connect();
 const port = 3000;
 app.use(express.json());
 app.use('/api/users', userRoutes);
-app.use('/api/personas', personRoutes);
+app.use('/api/persons', personRoutes);
 
 app.listen(port, () => {
     console.log(`Servidor escuchando en http://localhost:${port}`);

@@ -8,7 +8,7 @@ const db = new sequelize( // Creamos una nueva instancia de sequelize
     {
         host: 'localhost',
         dialect: 'mysql',
-        port: 3306,
+        port: 3308,
     },
     console.log(process.env.bd, process.env.bdusuario, process.env.bdcontra) // Imprimimos los datos de conexión    
 );
