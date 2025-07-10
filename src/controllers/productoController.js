@@ -1,17 +1,23 @@
 const Producto = require("../models/producto");
 const CategoriaProducto = require("../models/categoriaProducto");
-const { validationResult } = require('express-validator'); // Importa validationResult
+const { validationResult } = require('express-validator');
+const fs = require('fs');
+const path = require('path');
 
+// CREAR PRODUCTO
 exports.crearProducto = async (req, res) => {
-    // Verifica los errores de validación
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         const mensajes = errors.array().map(error => error.msg);
-        console.log(mensajes); 
         return res.status(400).json({ mensaje: "Errores de validación", errores: mensajes });
     }
 
     try {
+        // Si se subió imagen, la guardamos en el campo
+        if (req.file) {
+            req.body.imagen = '/uploads/imagenes-productos/' + req.file.filename;
+        }
+
         const nuevoProducto = await Producto.create(req.body);
         res.status(201).json({ mensaje: "Producto creado", data: nuevoProducto });
     } catch (error) {
@@ -26,7 +32,7 @@ exports.crearProducto = async (req, res) => {
     }
 };
 
-//READ (todos)
+// OBTENER TODOS LOS PRODUCTOS
 exports.obtenerProductos = async (req, res) => {
     try {
         const productos = await Producto.findAll({ include: CategoriaProducto });
@@ -36,7 +42,7 @@ exports.obtenerProductos = async (req, res) => {
     }
 };
 
-//READ (uno)
+// OBTENER UN PRODUCTO POR ID
 exports.obtenerProductoPorId = async (req, res) => {
     try {
         const producto = await Producto.findByPk(req.params.id, { include: CategoriaProducto });
@@ -47,7 +53,7 @@ exports.obtenerProductoPorId = async (req, res) => {
     }
 };
 
-// UPDATE
+// ACTUALIZAR PRODUCTO
 exports.actualizarProducto = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -82,7 +88,7 @@ exports.actualizarProducto = async (req, res) => {
     }
 };
 
-//DELETE
+// ELIMINAR PRODUCTO POR CÓDIGO
 exports.eliminarProductoPorCodigo = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -101,3 +107,65 @@ exports.eliminarProductoPorCodigo = async (req, res) => {
         res.status(500).json({ mensaje: "Error al eliminar producto", error: error.message });
     }
 };
+
+// ACTUALIZAR IMAGEN DE PRODUCTO
+exports.actualizarImagenProducto = async (req, res) => {
+    const { codigo } = req.params;
+    if (!req.file) {
+        return res.status(400).json({ mensaje: 'No se envió imagen' });
+    }
+
+    try {
+        const producto = await Producto.findOne({ where: { codigo } });
+        if (!producto) {
+            // Elimina la imagen recién subida si el producto no existe
+            fs.unlinkSync(req.file.path);
+            return res.status(404).json({ mensaje: 'Producto no encontrado' });
+        }
+
+        // Elimina la imagen anterior si existe
+        if (producto.imagen) {
+            const rutaAnterior = path.join(__dirname, '../uploads/imagenes-productos', path.basename(producto.imagen));
+            if (fs.existsSync(rutaAnterior)) {
+                fs.unlinkSync(rutaAnterior);
+            }
+        }
+
+        producto.imagen = '/uploads/imagenes-productos/' + req.file.filename;
+        await producto.save();
+
+        res.json({ mensaje: 'Imagen actualizada correctamente', imagen: producto.imagen });
+    } catch (error) {
+        // Si ocurre un error, elimina la imagen recién subida
+        if (req.file && fs.existsSync(req.file.path)) {
+            fs.unlinkSync(req.file.path);
+        }
+        console.error('Error al actualizar imagen:', error);
+        res.status(500).json({ mensaje: 'Error al actualizar la imagen del producto', error: error.message });
+    }
+};
+
+// ELIMINAR IMAGEN DE PRODUCTO
+exports.eliminarImagenProducto = async (req, res) => {
+    const { codigo } = req.params;
+    try {
+        const producto = await Producto.findOne({ where: { codigo } });
+        if (!producto) {
+            return res.status(404).json({ mensaje: 'Producto no encontrado' });
+        }
+        if (!producto.imagen) {
+            return res.status(400).json({ mensaje: 'El producto no tiene imagen para eliminar' });
+        }
+        const rutaImagen = path.join(__dirname, '../uploads/imagenes-productos', path.basename(producto.imagen));
+        if (fs.existsSync(rutaImagen)) {
+            fs.unlinkSync(rutaImagen);
+        }
+        producto.imagen = null;
+        await producto.save();
+        res.json({ mensaje: 'Imagen eliminada correctamente' });
+    } catch (error) {
+        console.error('Error al eliminar imagen:', error);
+        res.status(500).json({ mensaje: 'Error al eliminar la imagen del producto', error: error.message });
+    }
+};
+
