@@ -1,6 +1,6 @@
-//Katie Chiu
 const Venta = require('../models/venta');
 const DetalleVenta = require('../models/detalleVenta');
+const MovimientoCaja = require('../models/movimiento');
 const Producto = require('../models/producto');
 const { validationResult } = require('express-validator');
 const db = require('../configuration/db');
@@ -51,7 +51,14 @@ exports.guardar = async (req, res) => {
       tipo_pago,
       observaciones
     }, { transaction: t });
-
+    await MovimientoCaja.create({
+      tipo: 'ingreso',
+      descripcion: `Venta ${numero_factura}`,
+      monto: total,
+      fecha: fecha,
+      //cajaId: cajaActiva.id,
+      numero_factura: numero_factura
+    });
     for (const item of detalles) {
       const producto = await Producto.findByPk(item.codigo_producto, { transaction: t });
 
@@ -71,6 +78,7 @@ exports.guardar = async (req, res) => {
 
     await t.commit();
     res.status(201).json({ mensaje: 'Venta registrada con éxito', venta: nuevaVenta });
+    
 
   } catch (error) {
     await t.rollback();

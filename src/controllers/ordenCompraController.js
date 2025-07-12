@@ -1,7 +1,7 @@
-//Katie Chiu
 const { validationResult } = require('express-validator');
 const ordenCompra = require('../models/ordenCompra'); // mayúscula para modelo
 const OrdenCompraDetalle = require('../models/ordenCompraDetalle'); // modelo detalle
+const MovimientoCaja = require('../models/movimiento'); // modelo de movimiento de caja
 const db = require('../configuration/db'); // para transacciones
 
 exports.listar = async (req, res) => {
@@ -63,9 +63,17 @@ exports.guardar = async (req, res) => {
         }, { transaction: t });
       }
     }
-
+     await MovimientoCaja.create({
+      tipo: 'egreso',
+      descripcion: `Compra orden ${numero_orden}`,
+      monto: total,
+      fecha: fecha_emision,
+      //cajaId: cajaActiva.id,
+      numero_orden: numero_orden
+    });
     await t.commit();
-
+    // Crear el movimiento de egreso
+   
     console.log("Nueva orden de compra creada:", nuevaOrden);
     res.status(201).json({ message: "Orden creada con éxito", orden: nuevaOrden });
   } catch (error) {

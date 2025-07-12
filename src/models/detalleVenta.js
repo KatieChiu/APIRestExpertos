@@ -1,5 +1,4 @@
 // detalle de todos los productos{arrelo} que se hacen en una vennta
-// Katie Chiu
 const { DataTypes } = require('sequelize');
 const db = require('../configuration/db');
 const Venta = require('./venta');

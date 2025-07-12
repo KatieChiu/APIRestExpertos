@@ -1,4 +1,3 @@
-//Katie Chiu
 const {validationResult} = require('express-validator');
 
 
