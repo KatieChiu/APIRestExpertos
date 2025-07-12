@@ -16,8 +16,8 @@ const {
 
 const { handleValidationErrors } = require('../middlewares/validationMiddleware');
 
-router.post('/', handleValidationErrors, validateCreateUser, createUser);
-router.put('/:id', handleValidationErrors, validateUpdateUser, updateUser);
+router.post('/', validateCreateUser, handleValidationErrors, createUser);
+router.put('/:id', validateUpdateUser, handleValidationErrors, updateUser);
 router.get('/', getAllUsers);
 router.get('/:id', getUserById);
 router.delete('/:id', deleteUser);
