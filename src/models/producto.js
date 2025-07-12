@@ -40,7 +40,10 @@ const Producto = db.define('Producto', {
         type: DataTypes.INTEGER,
         defaultValue: 0
     },
-   
+    imagen: {
+        type: DataTypes.STRING(255),
+        allowNull: true
+    },
     activo: {
         type: DataTypes.BOOLEAN,
         defaultValue: true
@@ -50,6 +53,8 @@ const Producto = db.define('Producto', {
     timestamps: true
 });
 
+
+
 // Relación con CategoriaProducto
 Producto.belongsTo(CategoriaProducto, {
     foreignKey: {
@@ -58,6 +63,7 @@ Producto.belongsTo(CategoriaProducto, {
         type: DataTypes.STRING(20)
     }
 });
+
 
 
 // Relación con Proveedor 
