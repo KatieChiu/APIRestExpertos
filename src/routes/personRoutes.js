@@ -16,7 +16,7 @@ const {
 const { handleValidationErrors } = require('../middlewares/validationMiddleware');
 
 router.post('/', handleValidationErrors, validateCreatePerson, createPersona);
-router.put('/:id', handleValidationErrors, validateUpdatePerson , updatePersona);
+router.put('/:id', validateUpdatePerson, handleValidationErrors, updatePersona);
 router.get('/', getAllPersonas);
 router.get('/:id', getPersonaById);
 router.delete('/:id', deletePersona);
