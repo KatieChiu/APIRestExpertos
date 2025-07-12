@@ -8,6 +8,8 @@ const categoriaProducto = require("./models/categoriaProducto.js");
 const Producto = require("./models/producto.js");
 const categoriaRoutes = require('./routes/categoriaProductoRoutes');
 const productoRoutes = require('./routes/productoRoutes');
+const userRoutes = require('./routes/userRoutes');
+const personRoutes = require('./routes/personRoutes');
 
 
 
@@ -36,12 +38,10 @@ app.set("port", process.env.port || 3001); // Establece el puerto del servidor, 
 app.use(morgan("dev"));
 app.use(express.json());
 
-
 app.use('/api/categorias', categoriaRoutes);
 app.use('/api/productos', productoRoutes);
 
-
-app.use("/api/", require("./routes/productoRoutes.js")); // Rutas para productos
+// Removed redundant route registration for productoRoutes
 app.use("/api/", require("./routes/categoriaProductoRoutes.js")); // Rutas para categorías
 app.listen(app.get("port"), () => {
 console.log("Servidor corriendo en el puerto "+ app.get("port"));

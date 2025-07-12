@@ -11,7 +11,7 @@ const Usuario = db.define('Usuario', {
         allowNull: false,
         unique: true,
     },
-    username: {
+    username: { 
         type: DataTypes.STRING(50),
         allowNull: false,
         unique: true
