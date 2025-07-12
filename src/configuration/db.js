@@ -1,5 +1,5 @@
 const sequelize = require('sequelize'); // Importamos sequelize
-const dotenv = require('dotenv').config(); // Importamos dotenv para manejar variables de entorno // Cargamos las variables de entorno desde el archivo .env
+require('dotenv').config()
 
 const db = new sequelize( // Creamos una nueva instancia de sequelize
     process.env.BD, // Nombre de la base de datos
@@ -8,7 +8,7 @@ const db = new sequelize( // Creamos una nueva instancia de sequelize
     {
         host: 'localhost',
         dialect: 'mysql',
-        port: 3308,
+        port: 3306, // Puerto de la base de datos
     },
     console.log(process.env.bd, process.env.bdusuario, process.env.bdcontra) // Imprimimos los datos de conexión    
 );
