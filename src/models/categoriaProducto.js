@@ -5,15 +5,9 @@ const db = require('../configuration/db');
 const express = require('express');
 
 const CategoriaProducto = db.define('CategoriaProducto', {
-      id: { 
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-        allowNull: false,
-        unique: true,
-    },
+ 
     categoria_id: { 
-        type: DataTypes.STRING(20),
+        type: DataTypes.STRING(36),
         allowNull: false,
         unique: true,
     },

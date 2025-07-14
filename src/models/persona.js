@@ -1,5 +1,7 @@
-// models/persona base
-/*const { DataTypes } = require('sequelize');
+
+
+const { DataTypes } = require('sequelize');
+
 const db = require('../configuration/db');
 
 const Persona = db.define('Persona', {

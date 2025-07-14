@@ -1,16 +1,16 @@
-/*const {DataTypes} = require('sequelize');
+const {DataTypes} = require('sequelize');
 const sequelize = require('../configuration/db');
 const ordenCompra= require('./ordenCompra'); 
 const Proveedor = sequelize.define('Proveedor', {
 
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },  
+const Proveedor = db.define('Proveedor', {
+  
+
   proveedor_id: {
     type: DataTypes.STRING(36),
     primaryKey: true,
+    unique: true,
+    allowNull: false
     
   },   
   nombre: {
@@ -20,7 +20,8 @@ const Proveedor = sequelize.define('Proveedor', {
     telefono: {
         type: DataTypes.STRING(20),
         allowNull: false
-    },
+    }
+ 
     
 })
 

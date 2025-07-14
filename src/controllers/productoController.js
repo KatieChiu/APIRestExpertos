@@ -1,3 +1,4 @@
+
 const Producto = require("../models/producto");
 const CategoriaProducto = require("../models/categoriaProducto");
 const { validationResult } = require('express-validator');
@@ -18,6 +19,7 @@ exports.crearProducto = async (req, res) => {
             req.body.imagen = '/uploads/imagenes-productos/' + req.file.filename;
         }
 
+
         const nuevoProducto = await Producto.create(req.body);
         res.status(201).json({ mensaje: "Producto creado", data: nuevoProducto });
     } catch (error) {
@@ -32,7 +34,6 @@ exports.crearProducto = async (req, res) => {
     }
 };
 
-// OBTENER TODOS LOS PRODUCTOS
 exports.obtenerProductos = async (req, res) => {
     try {
         const productos = await Producto.findAll({ include: CategoriaProducto });
@@ -42,10 +43,13 @@ exports.obtenerProductos = async (req, res) => {
     }
 };
 
-// OBTENER UN PRODUCTO POR ID
+
+//READ (uno)
 exports.obtenerProductoPorId = async (req, res) => {
     try {
-        const producto = await Producto.findByPk(req.params.id, { include: CategoriaProducto });
+        const producto = await Producto.findByPk(req.params.codigo, { include: CategoriaProducto });
+=======
+
         if (!producto) return res.status(404).json({ mensaje: "No encontrado" });
         res.json(producto);
     } catch (error) {
@@ -53,7 +57,6 @@ exports.obtenerProductoPorId = async (req, res) => {
     }
 };
 
-// ACTUALIZAR PRODUCTO
 exports.actualizarProducto = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -62,7 +65,8 @@ exports.actualizarProducto = async (req, res) => {
     }
 
     try {
-        const producto = await Producto.findByPk(req.params.id);
+        const producto = await Producto.findByPk(req.params.codigo);
+      
         if (!producto) return res.status(404).json({ mensaje: "Producto no encontrado" });
 
         if (req.body.categoria_id) {
@@ -88,7 +92,6 @@ exports.actualizarProducto = async (req, res) => {
     }
 };
 
-// ELIMINAR PRODUCTO POR CÓDIGO
 exports.eliminarProductoPorCodigo = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -168,4 +171,5 @@ exports.eliminarImagenProducto = async (req, res) => {
         res.status(500).json({ mensaje: 'Error al eliminar la imagen del producto', error: error.message });
     }
 };
+
 
