@@ -1,5 +1,7 @@
-// models/persona.js
+
+
 const { DataTypes } = require('sequelize');
+
 const db = require('../configuration/db');
 
 const Persona = db.define('Persona', {
@@ -52,4 +54,4 @@ const Persona = db.define('Persona', {
     timestamps: true
 });
 
-module.exports = Persona;
+module.exports = Persona;*/

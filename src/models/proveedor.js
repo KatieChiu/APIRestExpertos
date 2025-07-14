@@ -1,9 +1,11 @@
 const {DataTypes} = require('sequelize');
-const db = require('../configuration/db');
-
+const sequelize = require('../configuration/db');
+const ordenCompra= require('./ordenCompra'); 
+const Proveedor = sequelize.define('Proveedor', {
 
 const Proveedor = db.define('Proveedor', {
   
+
   proveedor_id: {
     type: DataTypes.STRING(36),
     primaryKey: true,
@@ -24,4 +26,4 @@ const Proveedor = db.define('Proveedor', {
 })
 
 
-module.exports = Proveedor;
+module.exports = Proveedor;*/

@@ -1,10 +1,10 @@
-
 const { validationResult } = require('express-validator');
 const CategoriaProducto = require("../models/categoriaProducto");
 
 
 exports.crearCategoria = async (req, res) => {
     console.log("Datos recibidos:", req.body); // Agrega un log para depuración
+
     // Validación de errores
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

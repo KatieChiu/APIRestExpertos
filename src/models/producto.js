@@ -2,9 +2,10 @@
 const { DataTypes } = require('sequelize');
 const db = require('../configuration/db');
 const CategoriaProducto = require('./categoriaProducto');
-
+//const Proveedor = require('./proveedor');
 
 const Producto = db.define('Producto', {
+
    
   codigo: {
     type: DataTypes.STRING(20),
@@ -44,7 +45,6 @@ const Producto = db.define('Producto', {
       model: CategoriaProducto, // Nombre del modelo relacionado
       key: 'categoria_id' // Clave primaria de la tabla de categorias_productos
     }
-  }
 }, {
   tableName: 'productos',
   timestamps: true
@@ -54,6 +54,7 @@ const Producto = db.define('Producto', {
 // Relación con CategoriaProducto
 Producto.belongsTo(CategoriaProducto, { foreignKey: 'categoria_id' });
 CategoriaProducto.hasMany(Producto, { foreignKey: 'categoria_id' });
+
 
 
 

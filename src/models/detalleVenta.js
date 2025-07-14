@@ -1,6 +1,6 @@
-// detalle de todos los productos{arrelo} que se hacen en una vennta
+
 const { DataTypes } = require('sequelize');
-const db = require('../configuration/db');
+const db = require('../configuraciones/db');
 const Venta = require('./venta');
 const Producto = require('./producto');
 
@@ -41,8 +41,8 @@ const DetalleVenta = db.define('DetalleVenta', {
 // Relaciones
 Venta.hasMany(DetalleVenta, { foreignKey: 'numero_factura' });
 DetalleVenta.belongsTo(Venta, { foreignKey: 'numero_factura' });
-
 Producto.hasMany(DetalleVenta, { foreignKey: 'codigo_producto' });
 DetalleVenta.belongsTo(Producto, { foreignKey: 'codigo_producto' });
 
 module.exports = DetalleVenta;
+

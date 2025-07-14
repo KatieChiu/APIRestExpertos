@@ -87,7 +87,3 @@ app.use('/cliente/', require('./routes/clienteRoute'));
 app.use('/saldo/', require('./routes/cajaRoute'));
 app.use('/confCaja/', require('./routes/confCajaRoute'));
 app.use('/api/auth', authRoutes);
-
-
-
-

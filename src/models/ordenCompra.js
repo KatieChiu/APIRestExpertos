@@ -1,5 +1,7 @@
+
 const { DataTypes } = require('sequelize');
 const db = require('../configuration/db');
+
 const Proveedor = require('./proveedor');
 
 const OrdenCompra = db.define('OrdenCompra', {
@@ -55,3 +57,4 @@ Proveedor.hasMany(OrdenCompra, {
 });
 
 module.exports = OrdenCompra;
+

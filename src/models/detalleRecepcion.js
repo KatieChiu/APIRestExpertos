@@ -68,5 +68,3 @@ Producto.hasMany(DetalleRecepcion, {
 
 
 module.exports = DetalleRecepcion;
-
-//Erick Blanco

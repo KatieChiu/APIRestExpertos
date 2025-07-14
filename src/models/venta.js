@@ -1,8 +1,8 @@
-// models/venta.js
+
 const { DataTypes } = require('sequelize');
 const db = require('../configuration/db');
-//const Usuario = require('./users');
 const Producto = require('./producto');
+
 const Venta = db.define('Venta', {
     
     numero_factura: {
