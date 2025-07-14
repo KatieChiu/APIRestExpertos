@@ -1,5 +1,5 @@
 // models/usuario.js
-const { DataTypes } = require('sequelize');
+/*const { DataTypes } = require('sequelize');
 const db = require('../configuration/db');
 const Persona = require('./persona');
 
@@ -11,7 +11,7 @@ const Usuario = db.define('Usuario', {
         allowNull: false,
         unique: true,
     },
-    username: {
+    username: { 
         type: DataTypes.STRING(50),
         allowNull: false,
         unique: true
@@ -47,4 +47,4 @@ Persona.hasOne(Usuario, {
     foreignKey: 'persona_id'
 });
 
-module.exports = Usuario;
+module.exports = Usuario;*/

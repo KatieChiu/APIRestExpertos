@@ -1,3 +1,4 @@
+
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -20,7 +21,7 @@ db.authenticate()
   })
   .then(() => {
     console.log(' Tablas sincronizadas');
-    crearUsuarioMaestro(); // Crea el usuario admin si no existe
+    crearUsuarioMaestro(); // Crea  usuario admin si no existe
   })
   .catch(err => {
     console.error(' Error al conectar o sincronizar DB:', err);
@@ -28,6 +29,9 @@ db.authenticate()
 
 // Rutas
 app.use('/api/auth', authRoutes);
+app.use('/api/categorias', categoriaRoutes);
+app.use('/api/productos', productoRoutes);
+app.use("/api/", require("./routes/categoriaProductoRoutes.js"));
 
 // Levantar el servidor
 const PORT = process.env.PORT || 3000;

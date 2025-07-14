@@ -1,15 +1,15 @@
 // models/producto.js
 const { DataTypes } = require('sequelize');
-const db = require('../configuraciones/db');
+const db = require('../configuration/db');
 const CategoriaProducto = require('./categoriaProducto');
-const Proveedor = require('./proveedor');
+//const Proveedor = require('./proveedor');
 
 const Producto = db.define('Producto', {
     producto_id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
         primaryKey: true,
-        allowNull: false,
+        allowNull: false, 
         unique: true,
     },
     codigo: {
@@ -40,7 +40,10 @@ const Producto = db.define('Producto', {
         type: DataTypes.INTEGER,
         defaultValue: 0
     },
-   
+    imagen: {
+        type: DataTypes.STRING(255),
+        allowNull: true
+    },
     activo: {
         type: DataTypes.BOOLEAN,
         defaultValue: true
@@ -50,26 +53,27 @@ const Producto = db.define('Producto', {
     timestamps: true
 });
 
+
+
 // Relación con CategoriaProducto
 Producto.belongsTo(CategoriaProducto, {
     foreignKey: {
         name: 'categoria_id',
-        allowNull: false
+        allowNull: false,
+        type: DataTypes.STRING(20)
     }
 });
 
-CategoriaProducto.hasMany(Producto, {
-    foreignKey: 'categoria_id'
-});
+
 
 // Relación con Proveedor 
-Producto.belongsTo(Proveedor, {
+/*Producto.belongsTo(Proveedor, {
     foreignKey: {
         name: 'proveedor_id',
         allowNull: false
     }
 });
 
-Proveedor.hasMany(Producto, {foreignKey: 'proveedor_id'});
+Proveedor.hasMany(Producto, {foreignKey: 'proveedor_id'});*/
 
 module.exports = Producto;
