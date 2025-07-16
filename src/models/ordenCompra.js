@@ -41,7 +41,17 @@ const OrdenCompra = db.define('OrdenCompra', {
       model: Proveedor,
       key: 'proveedor_id'
     }
+  },
+  
+  usuario_id: {
+  type: DataTypes.INTEGER,
+  allowNull: false,
+  references: {
+    model: 'usuarios', 
+    key: 'usuario_id'
   }
+}
+
 }, {
   tableName: 'ordencompra',
   timestamps: true

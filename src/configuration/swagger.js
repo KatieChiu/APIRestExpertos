@@ -7,33 +7,33 @@ const options = {
     info: {
       title: 'API-SIEX',
       version: '1.0.0',
-      description: 'API del sistemas expertos',
+      description: 'API del sistema experto',
       contact: {
         email: 'desofiwfacturacion@gmail.com'
       },
     },
     servers: [
-        {
-          url: 'http://localhost:'+ 3000, // URL del servidor
-          description: 'Servidor local',
-        },
+      {
+        url: 'http://localhost:3000',
+        description: 'Servidor local',
+      },
     ],
     components: {
       securitySchemes: {
-          BearerAuth: {
-              type: 'http',
-              scheme: 'bearer',
-              bearerFormat: 'JWT'
-          }
+        BearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT'
+        }
       }
     },
     security: [
-        {
-            BearerAuth: []
-        }
-    ],
+      {
+        BearerAuth: []
+      }
+    ]
   },
-  apis: [`${path.join(__dirname, "../routes/*.js")}`], // Ruta a los archivos donde están definidas las rutas
+  apis: [`${path.join(__dirname, "../routes/*.js")}`],
 };
 
 const swaggerSpec = swaggerJsdoc(options);

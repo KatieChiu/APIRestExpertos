@@ -8,6 +8,7 @@ const CategoriaProducto = db.define('CategoriaProducto', {
  
     categoria_id: { 
         type: DataTypes.STRING(36),
+        primaryKey: true,
         allowNull: false,
         unique: true,
     },

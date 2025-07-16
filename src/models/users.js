@@ -1,5 +1,5 @@
-// models/usuario.js
-/*const { DataTypes } = require('sequelize');
+
+const { DataTypes } = require('sequelize');
 const db = require('../configuration/db');
 const Persona = require('./persona');
 
@@ -28,6 +28,11 @@ const Usuario = db.define('Usuario', {
     type: DataTypes.ENUM('Activo', 'Inactivo', 'Bloqueado'),
     allowNull: false,
     defaultValue: 'Activo'
+    },
+    imagen_perfil: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+        defaultValue: null
     }
 }, {
     tableName: 'usuarios',
@@ -47,4 +52,4 @@ Persona.hasOne(Usuario, {
     foreignKey: 'persona_id'
 });
 
-module.exports = Usuario;*/
+module.exports = Usuario;

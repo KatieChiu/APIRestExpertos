@@ -45,6 +45,7 @@ const Producto = db.define('Producto', {
       model: CategoriaProducto, // Nombre del modelo relacionado
       key: 'categoria_id' // Clave primaria de la tabla de categorias_productos
     }
+  },
 }, {
   tableName: 'productos',
   timestamps: true
