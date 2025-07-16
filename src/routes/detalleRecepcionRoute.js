@@ -88,7 +88,6 @@ const controlador = require('../controllers/detalleRecepcionController');
  *         description: Error de validación en los datos enviados
  */
 
-router.get('/', controlador.listar);
 
 router.post('/',
   body('numero_orden').notEmpty().withMessage('Número de orden obligatorio'),

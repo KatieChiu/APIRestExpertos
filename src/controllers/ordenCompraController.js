@@ -2,7 +2,11 @@ const { validationResult } = require('express-validator');
 const ordenCompra = require('../models/ordenCompra'); // mayúscula para modelo
 const OrdenCompraDetalle = require('../models/ordenCompraDetalle'); // modelo detalle
 const MovimientoCaja = require('../models/movimiento'); // modelo de movimiento de caja
+const Producto = require('../models/producto'); // modelo de producto
+const Proveedor = require('../models/proveedor'); // modelo de proveedor
 const db = require('../configuration/db'); // para transacciones
+const {EnviarCorreo} = require("../configuration/correo");// función para enviar correos
+require('dotenv').config();
 
 exports.listar = async (req, res) => {
   try {
@@ -19,7 +23,6 @@ exports.listar = async (req, res) => {
 exports.guardar = async (req, res) => {
   const errores = validationResult(req);
   if (!errores.isEmpty()) {
-    console.log(errores.array());
     return res.status(400).json(errores.array());
   }
 
@@ -27,19 +30,38 @@ exports.guardar = async (req, res) => {
     numero_orden,
     fecha_emision,
     fecha_entrega_esperada,
-    subtotal,
-    iva,
-    total,
     estado,
     observaciones,
     proveedor_id,
     detalles
   } = req.body;
 
+  const usuario_id = req.user?.usuario_id;
+  if (!usuario_id) {
+    return res.status(401).json({ error: "Usuario no autenticado" });
+  }
+
   const t = await db.transaction();
 
   try {
-    // Crear la orden
+    let subtotal = 0;
+
+    for (const detalle of detalles) {
+      const producto = await Producto.findByPk(detalle.codigo_producto, { transaction: t });
+
+      if (!producto) throw new Error(`Producto con código ${detalle.codigo_producto} no encontrado`);
+
+      const cantidad = parseFloat(detalle.cantidad);
+      const precio_unitario = parseFloat(detalle.precio_unitario);
+      subtotal += cantidad * precio_unitario;
+
+      producto.precio_compra = precio_unitario;
+      await producto.save({ transaction: t });
+    }
+
+    const iva = parseFloat((subtotal * 0.15).toFixed(2));
+    const total = parseFloat((subtotal + iva).toFixed(2));
+
     const nuevaOrden = await ordenCompra.create({
       numero_orden,
       fecha_emision,
@@ -49,39 +71,54 @@ exports.guardar = async (req, res) => {
       total,
       estado,
       observaciones,
-      proveedor_id
+      proveedor_id,
+      usuario_id // ✅ Asociación del usuario autenticado
     }, { transaction: t });
 
-    // Crear los detalles (si vienen)
-    if (detalles && Array.isArray(detalles)) {
-      for (const detalle of detalles) {
-        await OrdenCompraDetalle.create({
-          numero_orden,
-          codigo_producto: detalle.codigo_producto,
-          cantidad: detalle.cantidad,
-          precio_unitario: detalle.precio_unitario
-        }, { transaction: t });
-      }
+    for (const detalle of detalles) {
+      await OrdenCompraDetalle.create({
+        numero_orden,
+        codigo_producto: detalle.codigo_producto,
+        cantidad: detalle.cantidad,
+        precio_unitario: parseFloat(detalle.precio_unitario)
+      }, { transaction: t });
     }
-     await MovimientoCaja.create({
+
+    await MovimientoCaja.create({
       tipo: 'egreso',
       descripcion: `Compra orden ${numero_orden}`,
       monto: total,
       fecha: fecha_emision,
-      //cajaId: cajaActiva.id,
-      numero_orden: numero_orden
-    });
+      numero_orden
+    }, { transaction: t });
+
     await t.commit();
-    // Crear el movimiento de egreso
-   
-    console.log("Nueva orden de compra creada:", nuevaOrden);
+
+    // 📨 Envío de correo
+    const proveedor = await Proveedor.findByPk(proveedor_id);
+    if (proveedor?.email) {
+      try {
+        await EnviarCorreo({
+          from: process.env.correousuario,
+          to: proveedor.email,
+          subject: "Orden de Compra - Ferretería Sistemas",
+          html: `<p>Se ha extendido una orden de compra <b>${numero_orden}</b> por L. ${total}.00.</p>`
+        });
+      } catch (err) {
+        console.error("Error al enviar correo:", err.message);
+      }
+    }
+
     res.status(201).json({ message: "Orden creada con éxito", orden: nuevaOrden });
+
   } catch (error) {
     await t.rollback();
     console.error("Error al guardar compra:", error);
-    res.status(500).json({ error: "Error al guardar compra" });
+    res.status(500).json({ error: error.message });
   }
 };
+
+
 
 exports.editar = async (req, res) => {
   const errores = validationResult(req);

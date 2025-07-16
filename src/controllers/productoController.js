@@ -48,7 +48,6 @@ exports.obtenerProductos = async (req, res) => {
 exports.obtenerProductoPorId = async (req, res) => {
     try {
         const producto = await Producto.findByPk(req.params.codigo, { include: CategoriaProducto });
-=======
 
         if (!producto) return res.status(404).json({ mensaje: "No encontrado" });
         res.json(producto);

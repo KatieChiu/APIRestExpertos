@@ -54,4 +54,4 @@ const Persona = db.define('Persona', {
     timestamps: true
 });
 
-module.exports = Persona;*/
+module.exports = Persona;

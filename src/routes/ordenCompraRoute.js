@@ -4,6 +4,13 @@ const router = express.Router();
 const controlador = require('../controllers/ordenCompraController');
 const detalleControlador = require('../controllers/ordenDetalleController');
 
+const verifyToken = require('../middlewares/verifyToken');
+const ordenCompraController = require('../controllers/ordenCompraController');
+
+router.post('/', verifyToken, ordenCompraController.guardar);
+
+
+
 /**
  * @swagger
  * tags:
@@ -47,14 +54,10 @@ router.get('/', controlador.listar);
  *               - fecha_entrega_esperada
  *               - estado
  *               - proveedor_id
- *               - subtotal
- *               - iva
- *               - total
+ *               - detalles
  *             properties:
  *               numero_orden:
- *                 type: string
- *                 minLength: 5
- *                 maxLength: 20
+ *                 type: integer
  *               fecha_emision:
  *                 type: string
  *                 format: date
@@ -63,35 +66,38 @@ router.get('/', controlador.listar);
  *                 format: date
  *               estado:
  *                 type: string
- *                 enum: [pendiente, parcial, completada, cancelada]
  *               proveedor_id:
  *                 type: string
- *               subtotal:
- *                 type: number
- *                 format: float
- *               iva:
- *                 type: number
- *                 format: float
- *               total:
- *                 type: number
- *                 format: float
  *               observaciones:
  *                 type: string
+ *               detalles:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   required:
+ *                     - codigo_producto
+ *                     - cantidad
+ *                     - precio_unitario
+ *                   properties:
+ *                     codigo_producto:
+ *                       type: string
+ *                     cantidad:
+ *                       type: integer
+ *                     precio_unitario:
+ *                       type: number
  *     responses:
  *       201:
  *         description: Orden creada correctamente
  *       400:
- *         description: Error de validación
+ *         description: Error en los datos proporcionados
  */
+
 router.post('/',
     body('numero_orden').notEmpty().withMessage('El número de orden es obligatorio').isLength({ min: 5, max: 20 }).withMessage('El número de orden debe tener entre 5 y 20 caracteres'),
     body('fecha_emision').isDate().withMessage('La fecha de emisión debe ser una fecha válida'),
     body('fecha_entrega_esperada').isDate().withMessage('La fecha de entrega esperada debe ser una fecha válida'),
     body('estado').notEmpty().withMessage('El estado es obligatorio').isIn(['pendiente', 'parcial', 'completada', 'cancelada']).withMessage('El estado debe ser uno de: pendiente, parcial, completada, cancelada'),
     body('proveedor_id').notEmpty().withMessage('El ID del proveedor es obligatorio'),
-    body('subtotal').isDecimal().withMessage('El subtotal debe ser un número decimal').notEmpty().withMessage('El subtotal debe tener un valor'),
-    body('iva').isDecimal().withMessage('El IVA debe ser un número decimal').notEmpty().withMessage('El IVA debe tener un valor'),
-    body('total').isDecimal().withMessage('El total debe ser un número decimal').notEmpty().withMessage('El total debe tener un valor'),
     body('observaciones').optional().isString().withMessage('Las observaciones deben ser una cadena de texto'),
     controlador.guardar
 );
@@ -100,15 +106,8 @@ router.post('/',
  * @swagger
  * /ordenCompra:
  *   put:
- *     summary: Actualiza una orden de compra existente
+ *     summary: Actualiza una orden de compra existente junto con sus detalles
  *     tags: [Ordenes de Compra]
- *     parameters:
- *       - in: query
- *         name: numero_orden
- *         required: true
- *         schema:
- *           type: string
- *         description: Número de orden de compra a actualizar
  *     requestBody:
  *       required: true
  *       content:
@@ -116,6 +115,7 @@ router.post('/',
  *           schema:
  *             type: object
  *             required:
+ *               - numero_orden
  *               - fecha_emision
  *               - fecha_entrega_esperada
  *               - estado
@@ -123,7 +123,10 @@ router.post('/',
  *               - subtotal
  *               - iva
  *               - total
+ *               - detalles
  *             properties:
+ *               numero_orden:
+ *                 type: integer
  *               fecha_emision:
  *                 type: string
  *                 format: date
@@ -132,26 +135,40 @@ router.post('/',
  *                 format: date
  *               estado:
  *                 type: string
- *                 enum: [pendiente, parcial, completada, cancelada]
  *               proveedor_id:
  *                 type: string
  *               subtotal:
  *                 type: number
- *                 format: float
  *               iva:
  *                 type: number
- *                 format: float
  *               total:
  *                 type: number
- *                 format: float
  *               observaciones:
  *                 type: string
+ *               detalles:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   required:
+ *                     - codigo_producto
+ *                     - cantidad
+ *                     - precio_unitario
+ *                   properties:
+ *                     codigo_producto:
+ *                       type: string
+ *                     cantidad:
+ *                       type: integer
+ *                     precio_unitario:
+ *                       type: number
  *     responses:
  *       200:
  *         description: Orden actualizada correctamente
  *       400:
- *         description: Error de validación
+ *         description: Error en los datos proporcionados
+ *       404:
+ *         description: Orden no encontrada
  */
+
 router.put('/',
     query('numero_orden').notEmpty().withMessage('El número de orden es obligatorio').isLength({ min: 5, max: 20 }).withMessage('El número de orden debe tener entre 5 y 20 caracteres'),
     body('fecha_emision').isDate().withMessage('La fecha de emisión debe ser una fecha válida'),

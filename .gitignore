@@ -1,4 +1,12 @@
 node_modules/
-*.vscode/
-package-lock.json
+.vscode/
 *.env*
+package-lock.json
+
+# Archivos subidos por usuarios
+src/uploads/imagenes-usuarios/*
+src/uploads/imagenes-productos/*
+
+# Mantener las carpetas pero ignorar su contenido
+!src/uploads/imagenes-usuarios/.gitkeep
+!src/uploads/imagenes-productos/.gitkeep

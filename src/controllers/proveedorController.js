@@ -21,13 +21,14 @@ exports.guardar = async (req, res) => {
         return res.status(400).json(validacion.errors);
     }
 
-    const { proveedor_id, nombre, telefono } = req.body;
+    const { proveedor_id, nombre, telefono, email } = req.body;
 
     try {
         const nuevoProveedor = await proveedor.create({
             proveedor_id,
             nombre,
-            telefono
+            telefono,
+            email
         });
         res.status(201).json(nuevoProveedor);
     } catch (error) {
@@ -44,7 +45,7 @@ exports.editar = async (req, res) => {
     }
 
     const { proveedor_id } = req.params;
-    const { nombre, telefono } = req.body;
+    const { nombre, telefono, email } = req.body;
 
     try {
         const proveedorExiste = await Proveedor.findByPk(proveedor_id); 
@@ -57,7 +58,7 @@ exports.editar = async (req, res) => {
         
         await proveedorExiste.save();
 
-        console.log("Datos actualizados:", nombre, telefono);
+        console.log("Datos actualizados:", nombre, telefono, email);
 
 
     } catch (error) {
