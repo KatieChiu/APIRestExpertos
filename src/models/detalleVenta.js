@@ -38,11 +38,7 @@ const DetalleVenta = db.define('DetalleVenta', {
   timestamps: false
 });
 
-// Relaciones
-Venta.hasMany(DetalleVenta, { foreignKey: 'numero_factura' });
-DetalleVenta.belongsTo(Venta, { foreignKey: 'numero_factura' });
-Producto.hasMany(DetalleVenta, { foreignKey: 'codigo_producto' });
-DetalleVenta.belongsTo(Producto, { foreignKey: 'codigo_producto' });
+
 
 module.exports = DetalleVenta;
 

@@ -5,13 +5,12 @@ const { Op } = require('sequelize');
 const obtenerSaldoCaja = async (req, res) => {
   try {
     const config = await ConfiguracionCaja.findOne();
-
     const saldo_inicial = parseFloat(config?.saldo_inicial || 0);
     const fecha_config = config?.fecha;
 
     const inicioDia = new Date(fecha_config);
     inicioDia.setHours(0, 0, 0, 0); //aquí se limpia la hora
-
+    
     const movimientos = await MovimientoCaja.findAll({
       where: {
         fecha: {
@@ -19,6 +18,7 @@ const obtenerSaldoCaja = async (req, res) => {
         }
       }
     });
+    console.log(inicioDia);
 
     const total_ingresos = movimientos.filter(m => m.tipo === 'ingreso').reduce((sum, m) => sum + parseFloat(m.monto), 0);
 

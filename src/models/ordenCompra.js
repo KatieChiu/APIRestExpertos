@@ -57,14 +57,7 @@ const OrdenCompra = db.define('OrdenCompra', {
   timestamps: true
 });
 
-// Relación con Proveedor
-OrdenCompra.belongsTo(Proveedor, {
-  foreignKey: 'proveedor_id'
-});
-Proveedor.hasMany(OrdenCompra, {
-  foreignKey: 'proveedor_id'
 
-});
 
 module.exports = OrdenCompra;
 

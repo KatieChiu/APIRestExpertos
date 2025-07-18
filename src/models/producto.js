@@ -45,16 +45,16 @@ const Producto = db.define('Producto', {
       model: CategoriaProducto, // Nombre del modelo relacionado
       key: 'categoria_id' // Clave primaria de la tabla de categorias_productos
     }
+<<<<<<< Updated upstream
   }
+=======
+  },
+>>>>>>> Stashed changes
 }, {
   tableName: 'productos',
   timestamps: true
 });
 
-
-// Relación con CategoriaProducto
-Producto.belongsTo(CategoriaProducto, { foreignKey: 'categoria_id' });
-CategoriaProducto.hasMany(Producto, { foreignKey: 'categoria_id' });
 
 
 

@@ -3,6 +3,7 @@ const router = express.Router();
 const {EnviarCorreo} = require("../configuration/correo");
 require('dotenv').config();
 const { body, param } = require('express-validator'); 
+<<<<<<< Updated upstream
 
 /**
  * @swagger
@@ -57,6 +58,8 @@ const { body, param } = require('express-validator');
  *                   example: "Error al enviar el correo"
  */
 
+=======
+>>>>>>> Stashed changes
 router.post("/envio", async (req, res) => {
     const { email, descripcion } = req.body;
 

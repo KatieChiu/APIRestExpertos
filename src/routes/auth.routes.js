@@ -1,21 +1,39 @@
 // src/routes/auth.routes.js
+<<<<<<< Updated upstream
 const express = require('express');
 const router = express.Router();
 const { login, register } = require('../controllers/auth.controller');
 const { body } = require('express-validator');
+=======
+const express = require("express");
+const router = express.Router();
+const { login } = require("../controllers/auth.controller");
+const { check } = require("express-validator");
+>>>>>>> Stashed changes
 
 /**
  * @swagger
  * tags:
+<<<<<<< Updated upstream
  *   - name: Autenticación
  *     description: Operaciones relacionadas con autenticación y registro
+=======
+ *   name: Autenticación
+ *   description: Rutas de login de usuario
+>>>>>>> Stashed changes
  */
 
 /**
  * @swagger
+<<<<<<< Updated upstream
  * /auth/login:
  *   post:
  *     summary: Inicia sesión en el sistema
+=======
+ * /api/auth/login:
+ *   post:
+ *     summary: Iniciar sesión de usuario
+>>>>>>> Stashed changes
  *     tags: [Autenticación]
  *     requestBody:
  *       required: true
@@ -23,6 +41,7 @@ const { body } = require('express-validator');
  *         application/json:
  *           schema:
  *             type: object
+<<<<<<< Updated upstream
  *             required:
  *               - username
  *               - password
@@ -143,4 +162,26 @@ router.post('/register', [
   body('rol').isIn(['admin', 'ventas', 'soporte', 'bodega'])
 ], register);
 
+=======
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Token generado
+ *       401:
+ *         description: Credenciales incorrectas
+ */
+router.post(
+    "/login",
+    [
+        check("username", "El nombre de usuario es obligatorio").not().isEmpty(),
+        check("password", "La contraseña es obligatoria").not().isEmpty(),
+    ],
+    login
+);
+
+>>>>>>> Stashed changes
 module.exports = router;

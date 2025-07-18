@@ -67,7 +67,7 @@ exports.guardar = async (req, res) => {
       }
     }
 
-    // Actualizar estado de la orden
+    
     orden.estado = estado;
     await orden.save({ transaction: t });
 

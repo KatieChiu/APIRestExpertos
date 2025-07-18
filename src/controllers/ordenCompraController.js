@@ -49,10 +49,20 @@ exports.guardar = async (req, res) => {
     for (const detalle of detalles) {
       const producto = await Producto.findByPk(detalle.codigo_producto, { transaction: t });
 
+<<<<<<< Updated upstream
       if (!producto) throw new Error(`Producto con código ${detalle.codigo_producto} no encontrado`);
 
       const cantidad = parseFloat(detalle.cantidad);
       const precio_unitario = parseFloat(detalle.precio_unitario);
+=======
+      if (!producto) {
+        throw new Error(`Producto con código ${detalle.codigo_producto} no encontrado`);
+      }
+
+      const cantidad = parseFloat(detalle.cantidad);
+      const precio_unitario = parseFloat(detalle.precio_unitario);
+
+>>>>>>> Stashed changes
       subtotal += cantidad * precio_unitario;
 
       producto.precio_compra = precio_unitario;
@@ -94,6 +104,7 @@ exports.guardar = async (req, res) => {
 
     await t.commit();
 
+<<<<<<< Updated upstream
     // 📨 Envío de correo
     const proveedor = await Proveedor.findByPk(proveedor_id);
     if (proveedor?.email) {
@@ -109,6 +120,32 @@ exports.guardar = async (req, res) => {
       }
     }
 
+=======
+    // ENVIAR CORREO DESPUÉS DEL COMMIT (fuera de la transacción)
+    const proveedor = await Proveedor.findByPk(proveedor_id);
+    console.log("Intentando enviar correo a proveedor...");
+    console.log("Proveedor:", proveedor?.email);
+    if (proveedor && proveedor.email) {
+      try {
+        const enviado = await EnviarCorreo({
+          from: process.env.correousuario,
+          to: proveedor.email,
+          subject: "Orden de Compra - Ferretería Sistemas",
+          html: `
+            <p>Se ha extendido una orden de compra con número de orden <b>${numero_orden}</b>, de parte de Ferretería Sistemas por el monto de <b>L. ${total}.00</b>.</p>
+          `
+        });
+
+        if (!enviado) {
+          console.warn("Correo no enviado");
+        }
+      } catch (err) {
+        console.error("Error al enviar el correo:", err);
+      }
+    }
+
+    console.log("Nueva orden de compra creada:", nuevaOrden);
+>>>>>>> Stashed changes
     res.status(201).json({ message: "Orden creada con éxito", orden: nuevaOrden });
 
   } catch (error) {
@@ -119,7 +156,10 @@ exports.guardar = async (req, res) => {
 };
 
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 exports.editar = async (req, res) => {
   const errores = validationResult(req);
   if (!errores.isEmpty()) {

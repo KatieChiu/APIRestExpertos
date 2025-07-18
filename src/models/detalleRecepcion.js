@@ -45,26 +45,6 @@ const DetalleRecepcion = db.define('DetalleRecepcion', {
     timestamps: true,
 });
 
-//(usando numero_orden)
-DetalleRecepcion.belongsTo(OrdenCompra, {
-    foreignKey: 'numero_orden', 
-    targetKey: 'numero_orden'   
-});
-
-OrdenCompra.hasMany(DetalleRecepcion, {
-    foreignKey: 'numero_orden',
-    sourceKey: 'numero_orden'
-});
-
-//(usando codigo_producto)
-DetalleRecepcion.belongsTo(Producto, {
-    foreignKey: 'codigo_producto', 
-    targetKey: 'codigo' 
-});
-Producto.hasMany(DetalleRecepcion, {
-    foreignKey: 'codigo_producto',
-    sourceKey: 'codigo'
-});
 
 
 module.exports = DetalleRecepcion;

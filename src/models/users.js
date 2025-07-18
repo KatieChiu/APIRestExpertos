@@ -29,27 +29,33 @@ const Usuario = db.define('Usuario', {
     allowNull: false,
     defaultValue: 'Activo'
     },
+<<<<<<< Updated upstream
     imagen_perfil: {
         type: DataTypes.STRING(255),
         allowNull: true,
         defaultValue: null
+=======
+    
+    persona_id: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    references: {
+        model: 'personas',
+        key: 'persona_id'
+>>>>>>> Stashed changes
     }
+},
 }, {
     tableName: 'usuarios',
     timestamps: true
 });
 
-// Relación 1:1 (Usuario hereda de Persona)
-Usuario.belongsTo(Persona, {
-    foreignKey: {
-        name: 'persona_id',
-        allowNull: false
-    },
-    onDelete: 'CASCADE'
-});
 
+<<<<<<< Updated upstream
 Persona.hasOne(Usuario, {
     foreignKey: 'persona_id'
 });
 
+=======
+>>>>>>> Stashed changes
 module.exports = Usuario;

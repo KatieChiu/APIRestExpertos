@@ -39,22 +39,7 @@ const OrdenCompraDetalle = db.define('OrdenCompraDetalle', {
   timestamps: false
 });
 
-// una compra tiene varios detalles de productos
-OrdenCompra.hasMany(OrdenCompraDetalle, {
-  foreignKey: 'numero_orden'
-});
-// cada detalle de compra pertenece a una orden de compra
-OrdenCompraDetalle.belongsTo(OrdenCompra, {
-  foreignKey: 'numero_orden'
-});
-//un producto puede estar en varos detallles de compra
-Producto.hasMany(OrdenCompraDetalle, {
-  foreignKey: 'codigo_producto'
-});
-// cada detalle de compra pertenece a un producto
-OrdenCompraDetalle.belongsTo(Producto, {
-  foreignKey: 'codigo_producto'
-});
+
 
 
 module.exports = OrdenCompraDetalle;
