@@ -1,10 +1,9 @@
-
 const express = require('express');
 const router = express.Router();
 const productoController = require('../controllers/productoController');
 const { body, param } = require('express-validator');
 const Producto = require('../models/producto'); // Asegúrate de importar tu modelo
-
+const { uploadImagenProducto } = require('../configuration/archivosProductos');
 /**
  * @swagger
  * tags:
@@ -53,6 +52,7 @@ const Producto = require('../models/producto'); // Asegúrate de importar tu mod
  *         description: Error de validación
  */
 router.post('/crear',
+    uploadImagenProducto.single('imagen'),
     body('codigo')
         .notEmpty().withMessage('El código es obligatorio')
         .isLength({ max: 20, min: 5 }).withMessage('El código debe tener entre 5 y 20 caracteres')
@@ -75,7 +75,6 @@ router.post('/crear',
     body('categoria_id')
         .notEmpty().withMessage('La categoría es obligatoria')
         .isLength({ min: 3 }).withMessage('El ID de categoría debe tener al menos 3 caracteres'),
-
     productoController.crearProducto
 );
 
@@ -193,5 +192,60 @@ router.delete('/:codigo',
         .isLength({ max: 20, min: 5 }).withMessage('El código debe tener entre 5 y 20 caracteres'),
     productoController.eliminarProductoPorCodigo
 );
+
+/**
+ * @swagger
+ * /producto/{codigo}/imagen:
+ *   put:
+ *     summary: Sube o actualiza la imagen de un producto
+ *     tags: [Productos]
+ *     parameters:
+ *       - in: path
+ *         name: codigo
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Código del producto
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               imagen:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Imagen subida/actualizada correctamente
+ *       400:
+ *         description: Error al subir la imagen
+ */
+router.put('/:codigo/imagen',
+    uploadImagenProducto.single('imagen'),
+    productoController.actualizarImagenProducto
+);
+
+/**
+ * @swagger
+ * /producto/{codigo}/imagen:
+ *   delete:
+ *     summary: Elimina la imagen de un producto por su código
+ *     tags: [Productos]
+ *     parameters:
+ *       - in: path
+ *         name: codigo
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Código del producto
+ *     responses:
+ *       200:
+ *         description: Imagen eliminada correctamente
+ *       404:
+ *         description: Producto o imagen no encontrada
+ */
+router.delete('/:codigo/imagen', productoController.eliminarImagenProducto);
 
 module.exports = router;

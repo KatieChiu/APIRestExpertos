@@ -29,12 +29,6 @@ const Usuario = db.define('Usuario', {
     allowNull: false,
     defaultValue: 'Activo'
     },
-<<<<<<< Updated upstream
-    imagen_perfil: {
-        type: DataTypes.STRING(255),
-        allowNull: true,
-        defaultValue: null
-=======
     
     persona_id: {
     type: DataTypes.UUID,
@@ -42,7 +36,6 @@ const Usuario = db.define('Usuario', {
     references: {
         model: 'personas',
         key: 'persona_id'
->>>>>>> Stashed changes
     }
 },
 }, {
@@ -51,11 +44,4 @@ const Usuario = db.define('Usuario', {
 });
 
 
-<<<<<<< Updated upstream
-Persona.hasOne(Usuario, {
-    foreignKey: 'persona_id'
-});
-
-=======
->>>>>>> Stashed changes
 module.exports = Usuario;
