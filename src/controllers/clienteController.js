@@ -165,8 +165,10 @@ exports.eliminar = async (req, res) => {
             return res.status(404).json({ mensaje: 'Cliente no encontrado' });
         }
 
+
         await clienteExistente.destroy();
-        res.json({ mensaje: 'Cliente eliminado correctamente' });
+        res.json({ mensaje: 'Eliminado correctamente' });
+
 
     } catch (error) {
         console.error("Error al eliminar cliente:", error);
