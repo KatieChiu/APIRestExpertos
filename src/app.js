@@ -19,7 +19,7 @@ const cajaRoutes = require('./routes/cajaRoute');
 const confCajaRoutes = require('./routes/confCajaRoute');
 const userRoutes = require('./routes/userRoutes');
 const personaRoutes = require('./routes/personRoutes');
-const authRoutes = require('./routes/auth.routes.js');
+const authRoutes = require('./routes/auth.routes');
 // const { crearUsuarioMaestro } = require('./src/controllers/auth.controller');
 
 const { crearUsuarioMaestro } = require('./controllers/auth.controller');
