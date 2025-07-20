@@ -10,10 +10,12 @@ const {
     obtenerHistorialUsuario
 } = require('../controllers/users');
 
+const { uploadImagenUsuario } = require('../configuration/archivosUsuarios');
+
 const { 
     validateCreateUser,
     validateUpdateUser
-} = require('../validators/userValidators');
+} = require('../validators/userValidator');
 
 const { handleValidationErrors } = require('../middlewares/validationMiddleware');
 
@@ -62,7 +64,7 @@ const { handleValidationErrors } = require('../middlewares/validationMiddleware'
 
 /**
  * @swagger
- * /users:
+ * /user:
  *   post:
  *     summary: Crea un nuevo usuario
  *     tags: [Usuarios]
@@ -71,7 +73,7 @@ const { handleValidationErrors } = require('../middlewares/validationMiddleware'
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required:
@@ -81,6 +83,8 @@ const { handleValidationErrors } = require('../middlewares/validationMiddleware'
  *               - apellido
  *               - rol
  *             properties:
+ *               usuario_id:
+ *                 type: integer
  *               username:
  *                 type: string
  *                 description: Nombre de usuario único
@@ -97,6 +101,13 @@ const { handleValidationErrors } = require('../middlewares/validationMiddleware'
  *                 type: string
  *                 enum: [admin, ventas, soporte, bodega]
  *                 description: Rol del usuario
+ *               profileImage:
+ *                 type: string
+ *                 format: binary
+ *                 description: Imagen de perfil del usuario (opcional)
+ *               persona_id:
+ *                 type: integer
+ *                 description: ID de la persona asociada al usuario
  *     responses:
  *       201:
  *         description: Usuario creado exitosamente
@@ -110,11 +121,11 @@ const { handleValidationErrors } = require('../middlewares/validationMiddleware'
  *         description: Usuario ya existe
  */
 
-router.post('/', validateCreateUser, handleValidationErrors, createUser);
+router.post('/', uploadImagenUsuario.single('profileImage'), validateCreateUser, handleValidationErrors, createUser);
 
 /**
  * @swagger
- * /users/{id}:
+ * /user/{id}:
  *   put:
  *     summary: Actualiza un usuario existente
  *     tags: [Usuarios]
@@ -162,7 +173,7 @@ router.put('/:id', validateUpdateUser, handleValidationErrors, updateUser);
 
 /**
  * @swagger
- * /users:
+ * /user:
  *   get:
  *     summary: Obtiene la lista de todos los usuarios
  *     tags: [Usuarios]
@@ -183,7 +194,7 @@ router.get('/', getAllUsers);
 
 /**
  * @swagger
- * /users/{id}:
+ * /user/{id}:
  *   get:
  *     summary: Obtiene un usuario por su ID
  *     tags: [Usuarios]
@@ -211,7 +222,7 @@ router.get('/:id', getUserById);
 
 /**
  * @swagger
- * /users/{id}:
+ * /user/{id}:
  *   delete:
  *     summary: Elimina un usuario
  *     tags: [Usuarios]
@@ -235,7 +246,7 @@ router.delete('/:id', deleteUser);
 
 /**
  * @swagger
- * /users/{id}/historial:
+ * /user/{id}/historial:
  *   get:
  *     summary: Obtiene el historial de transacciones de un usuario
  *     tags: [Usuarios]

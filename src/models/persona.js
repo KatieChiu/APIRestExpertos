@@ -6,8 +6,8 @@ const db = require('../configuration/db');
 
 const Persona = db.define('Persona', {
     persona_id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
         primaryKey: true,
         allowNull: false,
         unique: true,

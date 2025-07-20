@@ -1,10 +1,38 @@
 const Users = require("../models/users");
 const Venta = require("../models/venta");
 const OrdenCompra = require("../models/ordenCompra");
+const path = require('path');
+const fs = require('fs');
+const sharp = require('sharp');
 
 const createUser = async (req, res) => {
     try {
-        const newUser = await Users.create(req.body);
+        let profileImagePath;
+        if (req.file) {
+            // Redimensionar imagen antes de guardar
+            const finalImageName = `usuario-${Date.now()}-${Math.floor(Math.random() * 10000)}.jpg`;
+            const finalImagePath = path.join('uploads/imagenes-usuarios', finalImageName);
+            const absoluteFinalPath = path.join(__dirname, '../', finalImagePath);
+
+            await sharp(req.file.path)
+                .resize(800, 600)
+                .toFormat('jpeg')
+                .toFile(absoluteFinalPath);
+
+            // Eliminar imagen temporal
+            fs.unlinkSync(req.file.path);
+
+            profileImagePath = finalImagePath;
+        } else {
+            // Imagen por defecto
+            profileImagePath = path.join('uploads/imagenes-usuarios', 'default_profile_image.png');
+        }
+
+        // Crear el usuario con la imagen de perfil
+        const newUser = await Users.create({
+            ...req.body,
+            profileImage: profileImagePath
+        });
         return res.status(201).json({
             success: true,
             message: 'Usuario creado exitosamente',
