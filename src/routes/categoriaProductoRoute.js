@@ -21,7 +21,7 @@ const { body, param } = require('express-validator');
  *               categoria_id:
  *                  type: string
  *                  minLength: 5
- *                  maxLength: 20
+ *                  maxLength: 50
  *               nombre:
  *                  type: string
  *                  minLength: 3
