@@ -18,11 +18,19 @@ const { body, param } = require('express-validator');
  *             required:
  *               - nombre
  *             properties:
+ *               categoria_id:
+ *                  type: string
+ *                  minLength: 5
+ *                  maxLength: 50
  *               nombre:
- *                 type: string
- *                 minLength: 3
- *                 maxLength: 100
- *                 description: Nombre de la categoría
+ *                  type: string
+ *                  minLength: 3
+ *                  maxLength: 100
+ *                  description: Nombre de la categoría
+ *               descripcion:
+ *                  type: string
+ *                  maxLength: 500
+ *             description: Descripción de la categoría 
  *     responses:
  *       201:
  *         description: Categoría creada exitosamente
@@ -70,8 +78,10 @@ router.get('/listar', categoriaController.obtenerCategorias);
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
- *         description: ID de la categoría
+ *           type: string
+ *           minLength: 3
+ *           maxLength: 36
+ *         description: ID de la categoría (por ejemplo, CAT001)
  *     responses:
  *       200:
  *         description: Datos de la categoría
@@ -80,14 +90,19 @@ router.get('/listar', categoriaController.obtenerCategorias);
  *             schema:
  *               type: object
  *               properties:
- *                 id:
- *                   type: integer
+ *                 categoria_id:
+ *                   type: string
  *                 nombre:
  *                   type: string
  *       404:
  *         description: Categoría no encontrada
  */
-router.get('/:id', categoriaController.obtenerCategoriaPorId);
+router.get('/:id',
+    param('id')
+        .notEmpty().withMessage('El ID de la categoría es obligatorio')
+        .isLength({ min: 3, max: 36 }).withMessage('El ID debe tener entre 3 y 36 caracteres'),
+    categoriaController.obtenerCategoriaPorId
+);
 
 /**
  * @swagger
@@ -100,8 +115,10 @@ router.get('/:id', categoriaController.obtenerCategoriaPorId);
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
- *         description: ID de la categoría a actualizar
+ *           type: string
+ *           minLength: 3
+ *           maxLength: 36
+ *         description: ID de la categoría a actualizar (por ejemplo, CAT001)
  *     requestBody:
  *       required: true
  *       content:
@@ -116,6 +133,10 @@ router.get('/:id', categoriaController.obtenerCategoriaPorId);
  *                 minLength: 3
  *                 maxLength: 100
  *                 description: Nuevo nombre de la categoría
+ *               descripcion:
+ *                 type: string
+ *                 maxLength: 500
+ *                 description: Nueva descripción de la categoría
  *     responses:
  *       200:
  *         description: Categoría actualizada correctamente
@@ -125,6 +146,9 @@ router.get('/:id', categoriaController.obtenerCategoriaPorId);
  *         description: Categoría no encontrada
  */
 router.put('/:id',
+    param('id')
+        .notEmpty().withMessage('El ID de la categoría es obligatorio')
+        .isLength({ min: 3, max: 36 }).withMessage('El ID debe tener entre 3 y 36 caracteres'),
     body('nombre')
         .notEmpty().withMessage('El nombre es obligatorio')
         .isLength({ max: 100, min: 3 }).withMessage('El nombre del producto debe tener entre 3 y 100 caracteres'),
