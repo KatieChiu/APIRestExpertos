@@ -8,7 +8,7 @@ const path = require('path');
 // CREAR PRODUCTO
 exports.crearProducto = async (req, res) => {
     console.log('BODY:', req.body);
-    console.log('FILE:', req.file);
+    // Removed sensitive file upload logging
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         const mensajes = errors.array().map(error => error.msg);
