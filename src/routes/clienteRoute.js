@@ -99,22 +99,25 @@ router.delete('/:id',
 
 /**
  * @swagger
- * /cliente:
+ * /cliente/{id}:
  *   put:
  *     summary: Actualiza un cliente existente
  *     tags: [Clientes]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           maxLength: 13
+ *         description: Número de identificación del cliente a actualizar
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - id
  *             properties:
- *               id:
- *                 type: string
- *                 maxLength: 13
  *               nombre:
  *                 type: string
  *                 maxLength: 100
@@ -132,6 +135,10 @@ router.delete('/:id',
  *         description: Cliente actualizado exitosamente
  *       400:
  *         description: Error de validación
+ *       404:
+ *         description: Cliente no encontrado
+ *       409:
+ *         description: Email ya existe en otro cliente
  */
 
 /**
@@ -175,8 +182,8 @@ router.post('/',
     clienteController.guardar
 );
 
-router.put('/',
-    body('id')
+router.put('/:id',
+    param('id')
         .notEmpty().withMessage('El número de identificación es obligatorio')
         .isLength({ max: 13 }).withMessage('El número de identificación debe tener máximo 13 caracteres'),
     body('nombre')
@@ -189,7 +196,7 @@ router.put('/',
         .isEmail().withMessage('Debe ser un email válido'),
     body('telefono')
         .optional()
-        .matches(/^[0-9]+$/).withMessage('El teléfono solo debe contener números')
+        .matches(/^[0-9\s\-\(\)]+$/).withMessage('El teléfono solo debe contener números, espacios, guiones y paréntesis')
         .isLength({ max: 15 }).withMessage('El teléfono debe tener máximo 15 caracteres'),
     body('direccion')
         .optional()
