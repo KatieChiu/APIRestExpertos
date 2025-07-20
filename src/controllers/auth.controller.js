@@ -17,7 +17,7 @@ async function crearUsuarioMaestro() {
         segundoNombre: '',
         primerApellido: 'Principal',
         segundoApellido: '',
-        numeroIdentificacion: '00000001',
+        numeroIdentificacion: '1000000100000',
         telefono: '',
         email: 'admin@admin.com',
         estadoCivil: '',
@@ -27,6 +27,7 @@ async function crearUsuarioMaestro() {
 
       // Crea el usuario asociado a la persona
       await Usuario.create({
+        usuario_id: 1, // Asegúrate de que este ID no cause conflictos
         username: 'admin',
         password: await bcrypt.hash('admin123', 10), // Cambia la contraseña si lo deseas
         rol: 'admin',

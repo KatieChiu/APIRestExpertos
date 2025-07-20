@@ -19,7 +19,7 @@ const cajaRoutes = require('./routes/cajaRoute');
 const confCajaRoutes = require('./routes/confCajaRoute');
 const userRoutes = require('./routes/userRoutes');
 const personaRoutes = require('./routes/personRoutes');
-// const authRoutes = require('./src/routes/auth.routes');
+const authRoutes = require('./routes/auth.routes.js');
 // const { crearUsuarioMaestro } = require('./src/controllers/auth.controller');
 
 const { crearUsuarioMaestro } = require('./controllers/auth.controller');
@@ -32,8 +32,7 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./configuration/swagger.js');
 
 const app = express();
-// Usuario Maestro
-app.use('/api/auth', require('./routes/auth.routes'));
+
 
 // Middlewares
 app.use(cors());
@@ -67,7 +66,7 @@ app.use('/saldo', cajaRoutes);
 app.use('/confCaja', confCajaRoutes);
 app.use('/user', userRoutes);
 app.use('/persona', personaRoutes);
-// app.use('/api/auth', authRoutes);
+app.use('/api/auth', authRoutes);
 
 // Conexión y sincronización de base de datos
 db.authenticate()

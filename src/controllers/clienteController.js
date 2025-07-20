@@ -49,7 +49,7 @@ exports.editar = async (req, res) => {
     try {
         const clienteExistente = await cliente.findByPk(id); 
         console.log(clienteExistente);
-        if (!proveedorExiste) {
+        if (!clienteExistente) {
             return res.status(404).json({ mensaje: 'Cliente no encontrado' });
         }
 
@@ -81,7 +81,7 @@ exports.eliminar = async (req, res) => {
             return res.status(404).json({ mensaje: ' No encontrado' });
         }
 
-        await proveedor.destroy();
+        await cliente.destroy();
         res.json({ mensaje: 'Eliminado correctamente' });
 
     } catch (error) {
