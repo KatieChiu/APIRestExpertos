@@ -7,7 +7,7 @@ const express = require('express');
 const CategoriaProducto = db.define('CategoriaProducto', {
  
     categoria_id: { 
-        type: DataTypes.STRING(36),
+        type: DataTypes.STRING(50),
         primaryKey: true,
         allowNull: false,
         unique: true,

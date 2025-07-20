@@ -18,11 +18,19 @@ const { body, param } = require('express-validator');
  *             required:
  *               - nombre
  *             properties:
+ *               categoria_id:
+ *                  type: string
+ *                  minLength: 5
+ *                  maxLength: 20
  *               nombre:
- *                 type: string
- *                 minLength: 3
- *                 maxLength: 100
- *                 description: Nombre de la categoría
+ *                  type: string
+ *                  minLength: 3
+ *                  maxLength: 100
+ *                  description: Nombre de la categoría
+ *               descripcion:
+ *                  type: string
+ *                  maxLength: 500
+ *             description: Descripción de la categoría 
  *     responses:
  *       201:
  *         description: Categoría creada exitosamente
