@@ -30,11 +30,7 @@ exports.guardar = async (req, res) => {
     fecha,
     estado,
     tipo_pago,
-<<<<<<< Updated upstream
-    descuento = 0,
-=======
     descuento,
->>>>>>> Stashed changes
     observaciones,
     detalles
   } = req.body;
@@ -50,10 +46,7 @@ exports.guardar = async (req, res) => {
   try {
     let subtotal = 0;
 
-<<<<<<< Updated upstream
-=======
     // Calcular subtotal en base a los productos
->>>>>>> Stashed changes
     for (const item of detalles) {
       const producto = await Producto.findByPk(item.codigo_producto, { transaction: t });
 
@@ -70,10 +63,7 @@ exports.guardar = async (req, res) => {
     const iva = parseFloat((subtotal * 0.15).toFixed(2));
     const total = parseFloat((subtotal + iva - descuento).toFixed(2));
 
-<<<<<<< Updated upstream
-=======
     // Crear la venta
->>>>>>> Stashed changes
     const nuevaVenta = await Venta.create({
       numero_factura,
       fecha,
@@ -87,10 +77,7 @@ exports.guardar = async (req, res) => {
       usuario_id // ← Asociar al usuario logueado
     }, { transaction: t });
 
-<<<<<<< Updated upstream
-=======
     // Guardar detalles y actualizar stock
->>>>>>> Stashed changes
     for (const item of detalles) {
       const producto = await Producto.findByPk(item.codigo_producto, { transaction: t });
 
@@ -108,10 +95,7 @@ exports.guardar = async (req, res) => {
       await producto.save({ transaction: t });
     }
 
-<<<<<<< Updated upstream
-=======
     // Registrar movimiento en caja
->>>>>>> Stashed changes
     await MovimientoCaja.create({
       tipo: 'ingreso',
       descripcion: `Venta ${numero_factura}`,
@@ -130,17 +114,11 @@ exports.guardar = async (req, res) => {
   }
 };
 
-<<<<<<< Updated upstream
-// Eliminar una venta y devolver stock
-exports.eliminar = async (req, res) => {
-  const { numero_factura } = req.params;
-=======
 
 // Eliminar una venta y devolver stock
 exports.eliminar = async (req, res) => {
   const { numero_factura } = req.params;
 
->>>>>>> Stashed changes
   const t = await db.transaction();
 
   try {

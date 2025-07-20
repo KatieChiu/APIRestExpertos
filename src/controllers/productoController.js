@@ -7,6 +7,8 @@ const path = require('path');
 
 // CREAR PRODUCTO
 exports.crearProducto = async (req, res) => {
+    console.log('BODY:', req.body);
+    console.log('FILE:', req.file);
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         const mensajes = errors.array().map(error => error.msg);
@@ -133,10 +135,15 @@ exports.actualizarImagenProducto = async (req, res) => {
             }
         }
 
-        producto.imagen = '/uploads/imagenes-productos/' + req.file.filename;
+        const imagenRelativa = '/uploads/imagenes-productos/' + req.file.filename;
+        producto.imagen = imagenRelativa;
         await producto.save();
 
-        res.json({ mensaje: 'Imagen actualizada correctamente', imagen: producto.imagen });
+        // Construir la URL absoluta para acceder a la imagen
+        const urlBase = req.protocol + '://' + req.get('host');
+        const urlImagen = urlBase + imagenRelativa;
+
+        res.json({ mensaje: 'Imagen actualizada correctamente', imagen: imagenRelativa, url: urlImagen });
     } catch (error) {
         // Si ocurre un error, elimina la imagen recién subida
         if (req.file && fs.existsSync(req.file.path)) {
