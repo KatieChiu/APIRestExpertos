@@ -9,20 +9,7 @@ dotenv.config(); // Cargar variables de entorno
 //const db = require('./configuration/db');
 const swaggerSpec = require('./configuration/swagger');
 
-// Modelos (asegúrate que las relaciones están en sus respectivos archivos)
-// const CategoriaProducto = require('./models/categoriaProducto');
-// const Cliente = require('./models/clientes');
-// const ConfiguracionCaja = require('./models/confCaja');
-// const DetalleRecepcion = require('./models/detalleRecepcion');
-// const DetalleVenta = require('./models/detalleVenta');
-// const MovimientoCaja = require('./models/movimiento');
-// const OrdenCompra = require('./models/ordenCompra');
-// const OrdenCompraDetalle = require('./models/ordenCompraDetalle');
-// const Persona = require('./models/persona');
-// const Producto = require('./models/producto');
-// const Proveedor = require('./models/proveedor');
-// const Usuario = require('./models/users');
-// const Venta = require('./models/venta');
+
 const { db } = require('./models');
 
 // Rutas
@@ -42,19 +29,7 @@ const { crearUsuarioMaestro } = require('./controllers/auth.controller');
 crearUsuarioMaestro(); // se ejecuta al iniciar
 
 
-const Usuario = require('./models/users.js');
-const Persona = require('./models/persona.js');
-const Cliente = require('./models/clientes.js');
-const CategoriaProducto = require('./models/categoriaProducto.js');
-const Producto = require('./models/producto.js');
-const Proveedor = require('./models/proveedor.js');
-const Venta = require('./models/venta.js');
-const DetalleVenta = require('./models/detalleVenta.js');
-const OrdenCompra = require('./models/ordenCompra.js');
-const OrdenCompraDetalle = require('./models/ordenCompraDetalle.js');
-const DetalleRecepcion = require('./models/detalleRecepcion.js');
-const MovimientoCaja = require('./models/movimiento.js');
-const ConfiguracionCaja = require('./models/confCaja.js');
+
 
 require('./models/relacionesTransaccionesUsuario.js'); // relaciones
 

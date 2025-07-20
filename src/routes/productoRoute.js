@@ -20,7 +20,7 @@ const { uploadImagenProducto } = require('../configuration/archivosProductos');
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required:
@@ -29,6 +29,7 @@ const { uploadImagenProducto } = require('../configuration/archivosProductos');
  *               - precio_venta
  *               - precio_compra
  *               - categoria_id
+ *               - imagen
  *             properties:
  *               codigo:
  *                 type: string
@@ -45,6 +46,10 @@ const { uploadImagenProducto } = require('../configuration/archivosProductos');
  *               categoria_id:
  *                 type: string
  *                 description: ID de la categoría
+ *               imagen:
+ *                 type: string
+ *                 format: binary
+ *                 description: Imagen del producto
  *     responses:
  *       201:
  *         description: Producto creado exitosamente
