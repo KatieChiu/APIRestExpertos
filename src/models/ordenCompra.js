@@ -35,7 +35,7 @@ const OrdenCompra = db.define('OrdenCompra', {
   },
   observaciones: DataTypes.TEXT,
   proveedor_id: {
-    type: DataTypes.STRING(36),
+    type: DataTypes.INTEGER,
     allowNull: false,
     references: {
       model: Proveedor,
@@ -44,7 +44,7 @@ const OrdenCompra = db.define('OrdenCompra', {
   },
   
   usuario_id: {
-  type: DataTypes.INTEGER,
+  type: DataTypes.STRING(36),
   allowNull: false,
   references: {
     model: 'usuarios', 

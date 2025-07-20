@@ -3,7 +3,8 @@ const sequelize = require('../configuration/db'); // asegúrate que esta es tu i
 
 const Proveedor = sequelize.define('Proveedor', {
   proveedor_id: {
-    type: DataTypes.STRING(36),
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
     primaryKey: true,
     unique: true,
     allowNull: false
