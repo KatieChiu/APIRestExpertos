@@ -1,6 +1,8 @@
 
 const cliente = require('../models/clientes');
 const {validationResult} = require('express-validator');
+const { Op } = require('sequelize');
+
 exports.listar = async (req, res) => {
     try {
         const cl = await cliente.findAll();
@@ -22,6 +24,24 @@ exports.guardar = async (req, res) => {
     const { id, nombre,email, telefono,direccion } = req.body;
 
     try {
+        // Verificar si el cliente ya existe por cédula
+        const clienteExistente = await cliente.findByPk(id);
+        if (clienteExistente) {
+            return res.status(409).json({ 
+                error: "Ya existe un cliente con esta cédula",
+                cedula: id 
+            });
+        }
+
+        // Verificar si el email ya existe
+        const clienteConEmail = await cliente.findOne({ where: { email } });
+        if (clienteConEmail) {
+            return res.status(409).json({ 
+                error: "Ya existe un cliente con este email",
+                email: email 
+            });
+        }
+
         const nuevoCliente = await cliente.create({
            id,
            nombre,
@@ -32,7 +52,39 @@ exports.guardar = async (req, res) => {
         res.status(201).json(nuevoCliente);
     } catch (error) {
         console.error("Error al guardar", error);
-        res.status(500).json({ error: "Error al guardar " });
+        
+        // Manejar error de duplicado de clave primaria (cédula)
+        if (error.name === 'SequelizeUniqueConstraintError') {
+            if (error.fields && error.fields.PRIMARY) {
+                return res.status(409).json({ 
+                    error: "Ya existe un cliente con esta cédula",
+                    cedula: id 
+                });
+            }
+            
+            // Manejar error de email duplicado
+            if (error.fields && error.fields.email) {
+                return res.status(409).json({ 
+                    error: "Ya existe un cliente con este email",
+                    email: email 
+                });
+            }
+            
+            return res.status(409).json({ 
+                error: "Ya existe un cliente con estos datos",
+                detalles: error.fields 
+            });
+        }
+        
+        // Manejar errores de validación
+        if (error.name === 'SequelizeValidationError') {
+            return res.status(400).json({ 
+                error: "Error de validación",
+                detalles: error.errors 
+            });
+        }
+        
+        res.status(500).json({ error: "Error al guardar cliente" });
     }
 }
 
@@ -44,25 +96,57 @@ exports.editar = async (req, res) => {
     }
 
     const { id } = req.params;
-    const { nombre, telefono, direccion } = req.body;
+    const { nombre, email, telefono, direccion } = req.body;
 
     try {
         const clienteExistente = await cliente.findByPk(id); 
         console.log(clienteExistente);
-        if (!proveedorExiste) {
+        if (!clienteExistente) {
             return res.status(404).json({ mensaje: 'Cliente no encontrado' });
         }
 
-       
-        
-        await clienteExistente.save();
+        // Verificar si el email ya existe en otro cliente
+        if (email && email !== clienteExistente.email) {
+            const clienteConEmail = await cliente.findOne({ 
+                where: { 
+                    email: email,
+                    id: { [Op.ne]: id } // Excluir el cliente actual
+                } 
+            });
+            if (clienteConEmail) {
+                return res.status(409).json({ 
+                    error: "Ya existe otro cliente con este email",
+                    email: email 
+                });
+            }
+        }
+
+        // Actualizar los campos
+        await clienteExistente.update({
+            nombre: nombre || clienteExistente.nombre,
+            email: email || clienteExistente.email,
+            telefono: telefono || clienteExistente.telefono,
+            direccion: direccion || clienteExistente.direccion
+        });
 
         console.log("Datos actualizados:", nombre, telefono, direccion);
-
+        res.json({ 
+            mensaje: 'Cliente actualizado correctamente',
+            cliente: clienteExistente 
+        });
 
     } catch (error) {
         console.error("Error al editar", error);
-        return res.status(500).json({ mensaje: 'Error ' });
+        
+        // Manejar errores de validación
+        if (error.name === 'SequelizeValidationError') {
+            return res.status(400).json({ 
+                error: "Error de validación",
+                detalles: error.errors 
+            });
+        }
+        
+        return res.status(500).json({ mensaje: 'Error al actualizar cliente' });
     }
 };
 
@@ -73,20 +157,20 @@ exports.eliminar = async (req, res) => {
         return res.status(400).json(errores.array());
     }
 
-    const { id } = req.body;
+    const { id } = req.params;
 
     try {
-        const cliente = await cliente.findByPk(id);
-        if (!cliente) {
-            return res.status(404).json({ mensaje: ' No encontrado' });
+        const clienteExistente = await cliente.findByPk(id);
+        if (!clienteExistente) {
+            return res.status(404).json({ mensaje: 'Cliente no encontrado' });
         }
 
-        await proveedor.destroy();
-        res.json({ mensaje: 'Eliminado correctamente' });
+        await clienteExistente.destroy();
+        res.json({ mensaje: 'Cliente eliminado correctamente' });
 
     } catch (error) {
-        console.error("Error al eliminar :", error);
-        return res.status(500).json({ mensaje: 'Error al eliminar ' });
+        console.error("Error al eliminar cliente:", error);
+        return res.status(500).json({ mensaje: 'Error al eliminar cliente' });
     }
 };
 

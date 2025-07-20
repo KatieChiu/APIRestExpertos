@@ -27,7 +27,7 @@ const Cliente= db.define('Cliente', {
         type: DataTypes.STRING(15),
         allowNull: true,
         validate: {
-            is: /^[0-9]+$/i // Solo números
+            is: /^[0-9\s\-\(\)]+$/i // Permite números, espacios, guiones y paréntesis
         }
     },
     direccion: {
