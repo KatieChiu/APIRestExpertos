@@ -166,7 +166,7 @@ exports.eliminar = async (req, res) => {
         }
 
 
-        await cliente.destroy();
+        await clienteExistente.destroy();
         res.json({ mensaje: 'Eliminado correctamente' });
 
 
