@@ -3,6 +3,60 @@ const router = express.Router();
 const {EnviarCorreo} = require("../configuration/correo");
 require('dotenv').config();
 const { body, param } = require('express-validator'); 
+
+/**
+ * @swagger
+ * tags:
+ *   - name: Correo
+ *     description: Operaciones relacionadas con el envío de correos electrónicos
+ */
+
+/**
+ * @swagger
+ * /correo/envio:
+ *   post:
+ *     summary: Envía un correo electrónico con información de orden de compra
+ *     tags: [Correo]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - descripcion
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: Dirección de correo electrónico del destinatario
+ *               descripcion:
+ *                 type: string
+ *                 description: Descripción de la orden de compra
+ *     responses:
+ *       200:
+ *         description: Correo enviado correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   example: "Correo enviado correctamente"
+ *       500:
+ *         description: Error al enviar el correo
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   example: "Error al enviar el correo"
+ */
+
 router.post("/envio", async (req, res) => {
     const { email, descripcion } = req.body;
 

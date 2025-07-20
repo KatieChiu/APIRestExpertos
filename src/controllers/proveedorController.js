@@ -58,7 +58,7 @@ exports.editar = async (req, res) => {
         
         await proveedorExiste.save();
 
-        console.log("Datos actualizados:", nombre, telefono), email;
+        console.log("Datos actualizados:", nombre, telefono, email);
 
 
     } catch (error) {

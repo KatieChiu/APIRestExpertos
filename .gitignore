@@ -4,7 +4,6 @@ node_modules/
 package-lock.json
 
 # Archivos subidos por usuarios
-src/uploads/imagenes-usuarios/*
 src/uploads/imagenes-productos/*
 
 # Mantener las carpetas pero ignorar su contenido

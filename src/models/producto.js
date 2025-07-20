@@ -3,6 +3,13 @@ const { DataTypes } = require('sequelize');
 const db = require('../configuration/db');
 const CategoriaProducto = require('./categoriaProducto');
 //const Proveedor = require('./proveedor');
+const fs = require('fs');
+const path = require('path');
+
+const rutaCarpeta = path.join(__dirname, '../uploads/imagenes-productos');
+if (!fs.existsSync(rutaCarpeta)) {
+    fs.mkdirSync(rutaCarpeta, { recursive: true });
+}
 
 const Producto = db.define('Producto', {
 
@@ -38,12 +45,16 @@ const Producto = db.define('Producto', {
     type: DataTypes.BOOLEAN,
     defaultValue: true
   },
+  imagen: { 
+    type: DataTypes.STRING(255),
+    allowNull: true
+  },
   categoria_id: {
     type: DataTypes.STRING(36),
     allowNull: false,
     references: {
-      model: CategoriaProducto, // Nombre del modelo relacionado
-      key: 'categoria_id' // Clave primaria de la tabla de categorias_productos
+      model: CategoriaProducto,
+      key: 'categoria_id'
     }
   },
 }, {
