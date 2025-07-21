@@ -150,6 +150,16 @@ router.get('/:codigo', productoController.obtenerProductoPorId);
  *               precio_compra:
  *                 type: number
  *                 format: float
+ *               categoria_id:
+ *                 type: string
+ *                 description: ID de la categoría
+ *               descripcion:
+ *                 type: string
+ *                 description: Descripción del producto
+ *               imagen:
+ *                 type: string
+ *                 format: binary
+ *                 description: Imagen del producto
  *     responses:
  *       200:
  *         description: Producto actualizado correctamente

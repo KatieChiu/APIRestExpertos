@@ -33,6 +33,9 @@ const controlador = require('../controllers/proveedorController');
  *                     type: string
  *                   telefono:
  *                     type: string
+ *                   email:
+ *                     type: string
+ *                 
  */
 router.get('/', controlador.listar);
 
@@ -74,12 +77,12 @@ router.post('/',
 
 /**
  * @swagger
- * /proveedor:
+ * /proveedor/{proveedor_id}:
  *   put:
  *     summary: Edita un proveedor existente
  *     tags: [Proveedores]
  *     parameters:
- *       - in: query
+ *       - in: path
  *         name: proveedor_id
  *         required: true
  *         schema:
@@ -103,45 +106,50 @@ router.post('/',
  *                 type: string
  *                 minLength: 8
  *                 maxLength: 15
+ *               email:
+ *                 type: string
+ *                 format: email
  *     responses:
  *       200:
  *         description: Proveedor actualizado exitosamente
  *       400:
  *         description: Error de validación
+ *       404:
+ *         description: Proveedor no encontrado
+ *       409:
+ *         description: Email ya existe en otro proveedor
  */
-router.put('/',
-    query('proveedor_id').notEmpty().withMessage('El ID del proveedor es obligatorio').isInt().withMessage('El ID del proveedor debe ser un número entero'),
+router.put('/:proveedor_id',
+    require('express-validator').param('proveedor_id').notEmpty().withMessage('El ID del proveedor es obligatorio').isInt().withMessage('El ID del proveedor debe ser un número entero'),
     body('nombre').notEmpty().withMessage('El nombre es obligatorio').isLength({ min: 3, max: 50 }).withMessage('El nombre debe tener entre 3 y 50 caracteres'),
     body('telefono').notEmpty().withMessage('El teléfono es obligatorio').isLength({ min: 8, max: 15 }).withMessage('El teléfono debe tener entre 8 y 15 caracteres'),
+    body('email').optional().isEmail().withMessage('Debe ser un email válido'),
     controlador.editar
 );
 
 /**
  * @swagger
- * /proveedor:
+ * /proveedor/{proveedor_id}:
  *   delete:
  *     summary: Elimina un proveedor
  *     tags: [Proveedores]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - proveedor_id
- *             properties:
- *               proveedor_id:
- *                 type: integer
- *                 description: ID del proveedor a eliminar
+ *     parameters:
+ *       - in: path
+ *         name: proveedor_id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID del proveedor a eliminar
  *     responses:
  *       200:
  *         description: Proveedor eliminado exitosamente
  *       400:
  *         description: Error de validación
+ *       404:
+ *         description: Proveedor no encontrado
  */
-router.delete('/',
-    body('proveedor_id').notEmpty().withMessage('El ID del proveedor es obligatorio').isInt().withMessage('El ID del proveedor debe ser un número entero'),
+router.delete('/:proveedor_id',
+    require('express-validator').param('proveedor_id').notEmpty().withMessage('El ID del proveedor es obligatorio').isInt().withMessage('El ID del proveedor debe ser un número entero'),
     controlador.eliminar
 );
 
