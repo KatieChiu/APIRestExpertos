@@ -4,7 +4,7 @@ const Usuario = require("../models/users");
 const Persona = require("../models/persona");
 const { hashPassword, verifyPassword } = require("../utils/argon");
 const generateToken = require("../utils/generateToken");
-const bcrypt = require('bcryptjs'); // Asegúrate de tener bcryptjs instalado
+const argon = require('argon2'); // Asegúrate de tener argon2 instalado
 
 async function crearUsuarioMaestro() {
   try {
@@ -29,7 +29,7 @@ async function crearUsuarioMaestro() {
       await Usuario.create({
         usuario_id: 1, // Asegúrate de que este ID no cause conflictos
         username: 'admin',
-        password: await bcrypt.hash('admin123', 10), // Cambia la contraseña si lo deseas
+        password: await argon.hash('admin123'), // Cambia la contraseña si lo deseas
         rol: 'admin',
         estado: 'Activo',
         persona_id: persona.persona_id // Relación con la persona creada
