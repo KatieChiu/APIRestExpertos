@@ -4,6 +4,7 @@ const OrdenCompra = require("../models/ordenCompra");
 const path = require('path');
 const fs = require('fs');
 const sharp = require('sharp');
+const argon = require('argon2');
 
 const createUser = async (req, res) => {
     try {
@@ -13,7 +14,10 @@ const createUser = async (req, res) => {
             const finalImageName = `usuario-${Date.now()}-${Math.floor(Math.random() * 10000)}.jpg`;
             const finalImagePath = path.join('uploads/imagenes-usuarios', finalImageName);
             const absoluteFinalPath = path.join(__dirname, '../', finalImagePath);
-
+            
+            const encryptedPassword = await argon.hash(req.body.password);
+            req.body.password = encryptedPassword;
+            
             await sharp(req.file.path)
                 .resize(800, 600)
                 .toFormat('jpeg')
