@@ -38,6 +38,9 @@ const multer = require('multer'); // Agregar esta línea al inicio si no está
  *               nombre:
  *                 type: string
  *                 description: Nombre del producto
+ *               descripcion:
+ *                 type: string
+ *                 description: Descripción del producto
  *               precio_venta:
  *                 type: number
  *                 format: float
