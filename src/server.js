@@ -12,5 +12,5 @@ db.authenticate()
     });
   })
   .catch((err) => {
-    console.error(' Error al conectar con la base de datos:', err);
+    console.error('Error al conectar con la base de datos:', err);
   });
