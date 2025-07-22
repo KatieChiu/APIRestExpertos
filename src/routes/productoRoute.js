@@ -4,6 +4,7 @@ const productoController = require('../controllers/productoController');
 const { body, param } = require('express-validator');
 const Producto = require('../models/producto'); // Asegúrate de importar tu modelo
 const { uploadImagenProducto } = require('../configuration/archivosProductos');
+const multer = require('multer'); // Agregar esta línea al inicio si no está
 /**
  * @swagger
  * tags:
@@ -146,7 +147,7 @@ router.get('/:codigo', productoController.obtenerProductoPorId);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -278,5 +279,20 @@ router.put('/:codigo/imagen',
  *         description: Producto o imagen no encontrada
  */
 router.delete('/:codigo/imagen', productoController.eliminarImagenProducto);
+
+// Middleware para manejar errores de Multer (límite de tamaño, tipo de archivo, etc.)
+router.use((err, req, res, next) => {
+    if (err instanceof multer.MulterError) {
+        if (err.code === 'LIMIT_FILE_SIZE') {
+            return res.status(400).json({ mensaje: 'La imagen es demasiado grande. El tamaño máximo permitido es 2MB.' });
+        }
+        // Otros errores de Multer
+        return res.status(400).json({ mensaje: err.message });
+    } else if (err) {
+        // Otros errores generales
+        return res.status(400).json({ mensaje: err.message });
+    }
+    next();
+});
 
 module.exports = router;
