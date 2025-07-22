@@ -38,6 +38,9 @@ const { body, param } = require('express-validator');
  *         description: Error de validación
  */
 router.post('/crear',
+    body('categoria_id')
+        .notEmpty().withMessage('El ID de la categoría es obligatorio')
+        .isLength({ min: 5, max: 10 }).withMessage('El ID de la categoría debe tener entre 5 y 10 caracteres'),
     body('nombre')
         .notEmpty().withMessage('El nombre es obligatorio')
         .isLength({ max: 100, min: 3 }).withMessage('El nombre del producto debe tener entre 3 y 100 caracteres'),
@@ -100,7 +103,7 @@ router.get('/listar', categoriaController.obtenerCategorias);
 router.get('/:id',
     param('id')
         .notEmpty().withMessage('El ID de la categoría es obligatorio')
-        .isLength({ min: 3, max: 36 }).withMessage('El ID debe tener entre 3 y 36 caracteres'),
+        .isLength({ min: 5, max: 10 }).withMessage('El ID debe tener entre 5 y 10 caracteres'),
     categoriaController.obtenerCategoriaPorId
 );
 
@@ -148,7 +151,7 @@ router.get('/:id',
 router.put('/:id',
     param('id')
         .notEmpty().withMessage('El ID de la categoría es obligatorio')
-        .isLength({ min: 3, max: 36 }).withMessage('El ID debe tener entre 3 y 36 caracteres'),
+        .isLength({ min: 5, max: 10 }).withMessage('El ID debe tener entre 5 y 10 caracteres'),
     body('nombre')
         .notEmpty().withMessage('El nombre es obligatorio')
         .isLength({ max: 100, min: 3 }).withMessage('El nombre del producto debe tener entre 3 y 100 caracteres'),
@@ -181,7 +184,7 @@ router.put('/:id',
 router.delete('/:categoria_id',
     param('categoria_id')
         .notEmpty().withMessage('La categoria_id es obligatoria')
-        .isLength({ max: 20, min: 5 }).withMessage('El código debe tener entre 5 y 20 caracteres'),
+        .isLength({ max: 10, min: 5 }).withMessage('El código debe tener entre 5 y 10 caracteres'),
     categoriaController.eliminarCategoria
 );
 
