@@ -114,6 +114,7 @@ const deletePersona = async (req, res) => {
     }
 };  
 
+
 module.exports = {
     createPersona,
     updatePersona,

@@ -170,4 +170,5 @@ router.get('/:numeroIdentificacion', getPersonaById);
  */
 router.delete('/:numeroIdentificacion', deletePersona);
 
+
 module.exports = router;
