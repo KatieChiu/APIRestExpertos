@@ -93,17 +93,17 @@ router.post('/', validateCreatePerson, handleValidationErrors, createPersona);
 
 /**
  * @swagger
- * /persona/{id}:
+ * /persona/{numeroIdentificacion}:
  *   put:
  *     summary: Actualizar una persona
  *     tags: [Personas]
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: numeroIdentificacion
  *         required: true
  *         schema:
- *           type: integer
- *         description: ID de la persona
+ *           type: string
+ *         description: Número de identificación de la persona
  *     requestBody:
  *       required: true
  *       content:
@@ -114,7 +114,7 @@ router.post('/', validateCreatePerson, handleValidationErrors, createPersona);
  *       200:
  *         description: Persona actualizada exitosamente
  */
-router.put('/:id', validateUpdatePerson, handleValidationErrors, updatePersona);
+router.put('/:numeroIdentificacion', validateUpdatePerson, handleValidationErrors, updatePersona);
 
 /**
  * @swagger
@@ -130,44 +130,44 @@ router.get('/', getAllPersonas);
 
 /**
  * @swagger
- * /persona/{id}:
+ * /persona/{numeroIdentificacion}:
  *   get:
- *     summary: Obtener una persona por ID
+ *     summary: Obtener una persona por número de identificación
  *     tags: [Personas]
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: numeroIdentificacion
  *         required: true
  *         schema:
- *           type: integer
- *         description: ID de la persona
+ *           type: string
+ *         description: Número de identificación de la persona
  *     responses:
  *       200:
  *         description: Persona encontrada
  *       404:
  *         description: Persona no encontrada
  */
-router.get('/:id', getPersonaById);
+router.get('/:numeroIdentificacion', getPersonaById);
 
 /**
  * @swagger
- * /persona/{id}:
+ * /persona/{numeroIdentificacion}:
  *   delete:
  *     summary: Eliminar una persona
  *     tags: [Personas]
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: numeroIdentificacion
  *         required: true
  *         schema:
- *           type: integer
- *         description: ID de la persona
+ *           type: string
+ *         description: Número de identificación de la persona
  *     responses:
  *       200:
  *         description: Persona eliminada exitosamente
  *       404:
  *         description: Persona no encontrada
  */
-router.delete('/:id', deletePersona);
+router.delete('/:numeroIdentificacion', deletePersona);
 
 module.exports = router;

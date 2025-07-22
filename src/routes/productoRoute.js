@@ -46,6 +46,14 @@ const { uploadImagenProducto } = require('../configuration/archivosProductos');
  *               categoria_id:
  *                 type: string
  *                 description: ID de la categoría
+ *               stock_minimo:
+ *                 type: number
+ *                 format: integer
+ *                 description: Stock mínimo del producto
+ *               stock_actual:
+ *                 type: number
+ *                 format: integer
+ *                 description: Stock actual del producto
  *               imagen:
  *                 type: string
  *                 format: binary
@@ -156,6 +164,14 @@ router.get('/:codigo', productoController.obtenerProductoPorId);
  *               descripcion:
  *                 type: string
  *                 description: Descripción del producto
+ *               stock_minimo:
+ *                 type: number
+ *                 format: integer
+ *                 description: Stock mínimo del producto
+ *               stock_actual:
+ *                 type: number
+ *                 format: integer
+ *                 description: Stock actual del producto
  *               imagen:
  *                 type: string
  *                 format: binary

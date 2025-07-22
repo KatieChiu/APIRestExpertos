@@ -63,6 +63,9 @@ router.get('/', controlador.listar);
  *                 type: string
  *                 minLength: 8
  *                 maxLength: 15
+ *               email:
+ *                 type: string
+ *                 format: email
  *     responses:
  *       201:
  *         description: Proveedor creado exitosamente

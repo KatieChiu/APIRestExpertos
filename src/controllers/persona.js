@@ -19,9 +19,9 @@ const createPersona = async (req, res) => {
 
 const updatePersona = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { numeroIdentificacion } = req.params;
         const [updated] = await Persona.update(req.body, {
-            where: { persona_id: id }
+            where: { numeroIdentificacion }
         });
 
         if (updated === 0) {
@@ -62,8 +62,10 @@ const getAllPersonas = async (req, res) => {
 
 const getPersonaById = async (req, res) => {
     try {
-        const { id } = req.params;
-        const persona = await Persona.findByPk(id);
+        const { numeroIdentificacion } = req.params;
+        const persona = await Persona.findOne({
+            where: { numeroIdentificacion }
+        });
 
         if (!persona) {
             return res.status(404).json({
@@ -87,9 +89,9 @@ const getPersonaById = async (req, res) => {
 
 const deletePersona = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { numeroIdentificacion } = req.params;
         const deleted = await Persona.destroy({
-            where: { persona_id: id }
+            where: { numeroIdentificacion }
         });
 
         if (deleted === 0) {
