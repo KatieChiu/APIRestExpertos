@@ -33,33 +33,37 @@ const { handleValidationErrors } = require('../middlewares/validationMiddleware'
  *     User:
  *       type: object
  *       properties:
- *         id:
+ *         usuario_id:
  *           type: integer
  *           description: ID único del usuario
  *         username:
  *           type: string
  *           description: Nombre de usuario único
- *         nombre:
+ *         password:
  *           type: string
- *           description: Nombre del usuario
- *         apellido:
- *           type: string
- *           description: Apellido del usuario
+ *           description: Contraseña del usuario (encriptada)
  *         rol:
  *           type: string
  *           enum: [admin, ventas, soporte, bodega]
  *           description: Rol del usuario en el sistema
  *         estado:
- *           type: boolean
- *           description: Estado activo/inactivo del usuario
- *         imagen_perfil:
  *           type: string
- *           nullable: true
- *           description: URL de la imagen de perfil del usuario
- *         fecha_creacion:
+ *           enum: [Activo, Inactivo, Bloqueado]
+ *           description: Estado del usuario
+ *         profileImage:
+ *           type: string
+ *           description: Nombre de archivo de la imagen de perfil del usuario
+ *         persona_id:
+ *           type: integer
+ *           description: ID de la persona asociada al usuario
+ *         createdAt:
  *           type: string
  *           format: date-time
- *           description: Fecha de creación del usuario
+ *           description: Fecha de creación
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           description: Fecha de actualización
  */
 
 /**
@@ -79,28 +83,23 @@ const { handleValidationErrors } = require('../middlewares/validationMiddleware'
  *             required:
  *               - username
  *               - password
- *               - nombre
- *               - apellido
  *               - rol
+ *               - persona_id
  *             properties:
- *               usuario_id:
- *                 type: integer
  *               username:
  *                 type: string
  *                 description: Nombre de usuario único
  *               password:
  *                 type: string
  *                 description: Contraseña del usuario
- *               nombre:
- *                 type: string
- *                 description: Nombre del usuario
- *               apellido:
- *                 type: string
- *                 description: Apellido del usuario
  *               rol:
  *                 type: string
  *                 enum: [admin, ventas, soporte, bodega]
  *                 description: Rol del usuario
+ *               estado:
+ *                 type: string
+ *                 enum: [Activo, Inactivo, Bloqueado]
+ *                 description: Estado del usuario (opcional, por defecto Activo)
  *               profileImage:
  *                 type: string
  *                 format: binary
@@ -144,18 +143,31 @@ router.post('/', uploadImagenUsuario.single('profileImage'), validateCreateUser,
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - username
+ *               - rol
+ *               - persona_id
  *             properties:
  *               username:
  *                 type: string
- *               nombre:
+ *                 description: Nombre de usuario único
+ *               password:
  *                 type: string
- *               apellido:
- *                 type: string
+ *                 description: Contraseña del usuario (opcional)
  *               rol:
  *                 type: string
  *                 enum: [admin, ventas, soporte, bodega]
+ *                 description: Rol del usuario
  *               estado:
- *                 type: boolean
+ *                 type: string
+ *                 enum: [Activo, Inactivo, Bloqueado]
+ *                 description: Estado del usuario
+ *               profileImage:
+ *                 type: string
+ *                 description: Nombre de archivo de la imagen de perfil (opcional)
+ *               persona_id:
+ *                 type: integer
+ *                 description: ID de la persona asociada al usuario
  *     responses:
  *       200:
  *         description: Usuario actualizado exitosamente
@@ -287,4 +299,4 @@ router.delete('/:id', deleteUser);
 
 router.get('/:id/historial', obtenerHistorialUsuario);
 
-module.exports = router; 
+module.exports = router;

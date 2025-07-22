@@ -3,7 +3,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const dotenv = require('dotenv');
 
-dotenv.config(); // Cargar variables de entorno
+dotenv.config();
 
 const { db } = require('./models');
 
@@ -20,41 +20,33 @@ const confCajaRoutes = require('./routes/confCajaRoute');
 const userRoutes = require('./routes/userRoutes');
 const personaRoutes = require('./routes/personRoutes');
 const authRoutes = require('./routes/auth.routes');
-// const { crearUsuarioMaestro } = require('./src/controllers/auth.controller');
 
 const { crearUsuarioMaestro } = require('./controllers/auth.controller');
-crearUsuarioMaestro(); // se ejecuta al iniciar
+crearUsuarioMaestro();
 
-
-require('./models/relacionesTransaccionesUsuario.js'); // relaciones
+require('./models/relacionesTransaccionesUsuario.js');
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./configuration/swagger.js');
 
 const app = express();
 
-
-// Middlewares
 app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 
-// Registrar usuario si tiene el rol Maestro
 app.use('/admin', require('./routes/admin.routes'));
 
-// Rutas básicas
 app.get('/', (req, res) => {
   res.send('Servidor Express activo');
 });
 
-// Documentación Swagger
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.get('/swagger.json', (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   res.send(swaggerSpec);
 });
 
-// Rutas API
 app.use('/proveedor', proveedorRoutes);
 app.use('/ordenCompra', ordenCompraRoutes);
 app.use('/venta', ventaRoutes);
@@ -85,3 +77,5 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
+
+module.exports = app;
