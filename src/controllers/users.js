@@ -159,7 +159,8 @@ const obtenerHistorialUsuario = async (req, res) => {
             include: [
                 { model: Venta, as: 'ventas' },
                 { model: OrdenCompra, as: 'compras' }
-            ]
+            ],
+            exclude: ['estado','rol','password','persona_id', 'createdAt', 'updatedAt']
         });
 
         if (!usuario) {
