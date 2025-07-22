@@ -4,7 +4,7 @@ const Usuario = require("../models/users");
 const Persona = require("../models/persona");
 const { hashPassword, verifyPassword } = require("../utils/argon");
 const generateToken = require("../utils/generateToken");
-const argon = require('argon2'); // Asegúrate de tener bcryptjs instalado
+const argon = require('argon2'); // Asegúrate de tener argon2 instalado
 
 async function crearUsuarioMaestro() {
   try {
