@@ -17,8 +17,7 @@ const createUser = async (req, res) => {
             
             const encryptedPassword = await argon.hash(
                 req.body.password,
-                { type: argon.argon2id, memoryCost: 2 ** 16, timeCost: 4, parallelism: 1 },
-                { raw: true },            
+                { type: argon.argon2id, memoryCost: 2 ** 16, timeCost: 4, parallelism: 1 }
             );
             req.body.password = encryptedPassword;
             
