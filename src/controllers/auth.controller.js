@@ -29,7 +29,7 @@ async function crearUsuarioMaestro() {
       await Usuario.create({
         usuario_id: 1, // Asegúrate de que este ID no cause conflictos
         username: 'admin',
-        password: await argon.hash('admin123'), // Cambia la contraseña si lo deseas
+        password: await argon.hash('admin123', { type: argon.argon2id, memoryCost: 2 ** 16, timeCost: 4, parallelism: 1 }), // Cambia la contraseña si lo deseas
         rol: 'admin',
         estado: 'Activo',
         persona_id: persona.persona_id // Relación con la persona creada
