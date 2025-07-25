@@ -1,11 +1,13 @@
-// models/persona base
+
+
 const { DataTypes } = require('sequelize');
+
 const db = require('../configuration/db');
 
 const Persona = db.define('Persona', {
     persona_id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
         primaryKey: true,
         allowNull: false,
         unique: true,
@@ -51,5 +53,6 @@ const Persona = db.define('Persona', {
     tableName: 'personas',
     timestamps: true
 });
+
 
 module.exports = Persona;

@@ -1,4 +1,4 @@
-// models/usuario.js
+
 const { DataTypes } = require('sequelize');
 const db = require('../configuration/db');
 const Persona = require('./persona');
@@ -11,7 +11,7 @@ const Usuario = db.define('Usuario', {
         allowNull: false,
         unique: true,
     },
-    username: {
+    username: { 
         type: DataTypes.STRING(50),
         allowNull: false,
         unique: true
@@ -23,23 +23,29 @@ const Usuario = db.define('Usuario', {
     rol: {
         type: DataTypes.ENUM('admin', 'ventas', 'soporte', 'bodega'),
         allowNull: false
+    },
+    estado: {
+    type: DataTypes.ENUM('Activo', 'Inactivo', 'Bloqueado'),
+    allowNull: false,
+    defaultValue: 'Activo'
+    },
+    profileImage: {
+        type: DataTypes.STRING(255),
+        allowNull: false,
+        defaultValue: 'default_profile_image.png'
+    },
+    persona_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+        model: 'personas',
+        key: 'persona_id'
     }
+},
 }, {
     tableName: 'usuarios',
     timestamps: true
 });
 
-// Relación 1:1 (Usuario hereda de Persona)
-Usuario.belongsTo(Persona, {
-    foreignKey: {
-        name: 'persona_id',
-        allowNull: false
-    },
-    onDelete: 'CASCADE'
-});
-
-Persona.hasOne(Usuario, {
-    foreignKey: 'persona_id'
-});
 
 module.exports = Usuario;
