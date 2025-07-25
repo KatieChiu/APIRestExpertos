@@ -4,7 +4,10 @@ const OrdenCompraDetalle = require('../models/ordenCompraDetalle'); // modelo de
 const MovimientoCaja = require('../models/movimiento'); // modelo de movimiento de caja
 const Producto = require('../models/producto'); // modelo de producto
 const Proveedor = require('../models/proveedor'); // modelo de proveedor
+
 const usuario= require('../models/users'); // modelo de usuario
+
+
 const db = require('../configuration/db'); // para transacciones
 const {EnviarCorreo} = require("../configuration/correo");// función para enviar correos
 require('dotenv').config();
@@ -30,7 +33,6 @@ exports.guardar = async (req, res) => {
  if (!usuario_id) {
     return res.status(401).json({ error: "Usuario no autenticado" });
   }
-
   const user = await usuario.findByPk(usuario_id);
   if (!user) {
     return res.status(404).json({ error: "Usuario no encontrado" });
@@ -70,7 +72,6 @@ exports.guardar = async (req, res) => {
       observaciones,
       proveedor_id,
       usuario_id
-     
     }, { transaction: t });
 
     for (const detalle of detalles) {

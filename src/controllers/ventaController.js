@@ -37,6 +37,7 @@ exports.guardar = async (req, res) => {
     detalles
   } = req.body;
 
+
   if (!usuario_id) {
     return res.status(401).json({ error: "Usuario no autenticado" });
   }
@@ -44,6 +45,7 @@ exports.guardar = async (req, res) => {
   const user = await usuario.findByPk(usuario_id);
   if (!user) {
     return res.status(404).json({ error: "Usuario no encontrado" });
+
   }
 
   const t = await db.transaction();

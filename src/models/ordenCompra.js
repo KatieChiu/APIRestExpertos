@@ -61,3 +61,4 @@ const OrdenCompra = db.define('OrdenCompra', {
 
 module.exports = OrdenCompra;
 
+

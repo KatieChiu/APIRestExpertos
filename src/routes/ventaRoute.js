@@ -2,6 +2,7 @@ const express = require('express');
 const { body, query, param } = require('express-validator');
 const router = express.Router();
 const controlador = require('../controllers/ventaController');
+const verifyToken = require('../middlewares/verifyToken');
 
 
 /**

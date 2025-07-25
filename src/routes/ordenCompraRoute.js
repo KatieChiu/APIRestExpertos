@@ -6,7 +6,6 @@ const detalleControlador = require('../controllers/ordenDetalleController');
 
 
 
-
 /**
  * @swagger
  * tags:
@@ -69,6 +68,8 @@ router.get('/', controlador.listar);
  *                 type: string
  *               usuario_id:
  *                 type: integer    
+ *               observaciones:
+ *                 type: string
  *               detalles:
  *                 type: array
  *                 items:
@@ -91,7 +92,8 @@ router.get('/', controlador.listar);
  *         description: Error en los datos proporcionados
  */
 
-router.post('/', 
+
+router.post('/',
     body('numero_orden').notEmpty().withMessage('El número de orden es obligatorio').isLength({ min: 5, max: 20 }).withMessage('El número de orden debe tener entre 5 y 20 caracteres'),
     body('fecha_emision').isDate().withMessage('La fecha de emisión debe ser una fecha válida'),
     body('fecha_entrega_esperada').isDate().withMessage('La fecha de entrega esperada debe ser una fecha válida'),
