@@ -5,6 +5,9 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
+const { crearUsuarioMaestro } = require('./controllers/auth.controller');
+
+
 const { db } = require('./models');
 
 // Rutas
@@ -20,9 +23,6 @@ const confCajaRoutes = require('./routes/confCajaRoute');
 const userRoutes = require('./routes/userRoutes');
 const personaRoutes = require('./routes/personRoutes');
 const authRoutes = require('./routes/auth.routes');
-
-const { crearUsuarioMaestro } = require('./controllers/auth.controller');
-crearUsuarioMaestro();
 
 require('./models/relacionesTransaccionesUsuario.js');
 
@@ -60,6 +60,7 @@ app.use('/user', userRoutes);
 app.use('/persona', personaRoutes);
 app.use('/api/auth', authRoutes);
 
+
 // Conexión y sincronización de base de datos
 db.authenticate()
   .then(async () => {
@@ -67,6 +68,7 @@ db.authenticate()
 
     await db.sync({ alter: true }); // Solo para desarrollo (cambiar en producción)
     console.log('Modelos sincronizados');
+    crearUsuarioMaestro();
   })
   .catch((err) => {
     console.error(' Error al conectar con la base de datos:', err);

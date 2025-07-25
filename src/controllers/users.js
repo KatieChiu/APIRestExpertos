@@ -15,7 +15,10 @@ const createUser = async (req, res) => {
             const finalImagePath = path.join('uploads/imagenes-usuarios', finalImageName);
             const absoluteFinalPath = path.join(__dirname, '../', finalImagePath);
             
-            const encryptedPassword = await argon.hash(req.body.password);
+            const encryptedPassword = await argon.hash(
+                req.body.password,
+                { type: argon.argon2id, memoryCost: 2 ** 16, timeCost: 4, parallelism: 1 }
+            );
             req.body.password = encryptedPassword;
             
             await sharp(req.file.path)
