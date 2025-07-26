@@ -74,10 +74,4 @@ db.authenticate()
     console.error(' Error al conectar con la base de datos:', err);
   });
 
-// Iniciar servidor
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
-});
-
 module.exports = app;
