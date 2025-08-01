@@ -1,8 +1,6 @@
 const db = require('../configuration/db');
 
-// Import models
-const Usuario = require('./users');
-const Persona = require('./persona');
+// Sequelize models
 const Producto = require('./producto');
 const CategoriaProducto = require('./categoriaProducto');
 const Cliente = require('./clientes');
@@ -15,11 +13,17 @@ const DetalleRecepcion = require('./detalleRecepcion');
 const ConfiguracionCaja = require('./confCaja');
 const MovimientoCaja = require('./movimiento');
 
-// RELATIONS
+// Mongoose (para Persona y Usuario)
+const mongoose = require('mongoose');
+mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/miapp', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
-// Usuario - Persona (1:1)
-Usuario.belongsTo(Persona, { foreignKey: { name: 'persona_id', allowNull: false }, onDelete: 'CASCADE' });
-Persona.hasOne(Usuario, { foreignKey: 'persona_id' });
+const Usuario = require('./users');   // Modelo mongoose
+const Persona = require('./persona'); // Modelo mongoose
+
+// RELATIONS SOLO PARA SEQUELIZE
 
 // Producto - CategoriaProducto (N:1)
 Producto.belongsTo(CategoriaProducto, { foreignKey: 'categoria_id' });
@@ -53,16 +57,15 @@ OrdenCompraDetalle.belongsTo(Producto, { foreignKey: 'codigo_producto' });
 Proveedor.hasMany(OrdenCompra, { foreignKey: 'proveedor_id' });
 OrdenCompra.belongsTo(Proveedor, { foreignKey: 'proveedor_id' });
 
-// Usuario - Persona (1:1)
-Usuario.belongsTo(Persona, { foreignKey: 'persona_id' });
-Persona.hasOne(Usuario, { foreignKey: 'persona_id' });
-
-
-// Export models and conexion
+// Exportar Sequelize y Mongoose
 module.exports = {
-  db,
+  // Conexiones
+  db,       // Sequelize
+  mongoose, // Mongoose
+  // Modelos Mongo
   Usuario,
   Persona,
+  // Modelos SQL
   Producto,
   CategoriaProducto,
   Cliente,

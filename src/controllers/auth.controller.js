@@ -1,18 +1,15 @@
-// src/controllers/auth.controller.js
 const { validationResult } = require("express-validator");
 const Usuario = require("../models/users");
 const Persona = require("../models/persona");
 const { hashPassword, verifyPassword } = require("../utils/argon");
 const generateToken = require("../utils/generateToken");
-const argon = require('argon2'); // Asegúrate de tener argon2 instalado
+const argon = require('argon2');
 
 async function crearUsuarioMaestro() {
   try {
-    // Verifica si ya existe el usuario maestro
-    const existe = await Usuario.findOne({ where: { username: 'admin' } });
+    const existe = await Usuario.findOne({ username: 'admin' });
     if (!existe) {
-      // Crea la persona
-      const persona = await Persona.create({
+      const persona = new Persona({
         primerNombre: 'Admin',
         segundoNombre: '',
         primerApellido: 'Principal',
@@ -24,16 +21,15 @@ async function crearUsuarioMaestro() {
         sexo: '',
         direccion: ''
       });
+      await persona.save();
 
-      // Crea el usuario asociado a la persona
-      await Usuario.create({
-        usuario_id: 1, // Asegúrate de que este ID no cause conflictos
+      await new Usuario({
         username: 'admin',
-        password: await argon.hash('admin123', { type: argon.argon2id, memoryCost: 2 ** 16, timeCost: 4, parallelism: 1 }), // Cambia la contraseña si lo deseas
+        password: await argon.hash('admin123', { type: argon.argon2id }),
         rol: 'admin',
         estado: 'Activo',
-        persona_id: persona.persona_id // Relación con la persona creada
-      });
+        persona_id: persona._id
+      }).save();
 
       console.log('Usuario maestro creado');
     }
@@ -42,30 +38,35 @@ async function crearUsuarioMaestro() {
   }
 }
 
-// Login
 const login = async (req, res) => {
-    const errores = validationResult(req);
-    if (!errores.isEmpty()) {
-        return res.status(400).json({ errores: errores.array() });
-    }
+  const errores = validationResult(req);
+  if (!errores.isEmpty()) {
+    return res.status(400).json({ errores: errores.array() });
+  }
 
-    const { username, password } = req.body;
-    try {
-        const user = await Usuario.findOne({ where: { username } });
-        if (!user) return res.status(404).json({ msg: "Usuario no encontrado" });
+  const { username, password } = req.body;
+  try {
+    const user = await Usuario.findOne({ username }).populate('persona_id');
+    if (!user) return res.status(404).json({ msg: "Usuario no encontrado" });
 
-        const valid = await verifyPassword(password, user.password);
-        if (!valid) return res.status(401).json({ msg: "Contraseña incorrecta" });
+    const valid = await verifyPassword(password, user.password);
+    if (!valid) return res.status(401).json({ msg: "Contraseña incorrecta" });
 
-        const token = generateToken(user);
-        res.json({ token });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-        console.log(error);
-    }
+    const token = generateToken(user);
+
+    // jsonwebtoken y algunos datos del usuario
+    return res.json({
+      token,
+      user: {
+        username: user.username,
+        rol: user.rol,
+        persona: user.persona_id
+      }
+    });
+
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
 };
 
-module.exports = {
-    crearUsuarioMaestro,
-    login
-};
+module.exports = { crearUsuarioMaestro, login };

@@ -1,51 +1,12 @@
+const mongoose = require('mongoose');
 
-const { DataTypes } = require('sequelize');
-const db = require('../configuration/db');
-const Persona = require('./persona');
+const usuarioSchema = new mongoose.Schema({
+    username: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    rol: { type: String, enum: ['admin', 'ventas', 'soporte', 'bodega'], required: true },
+    estado: { type: String, enum: ['Activo', 'Inactivo', 'Bloqueado'], default: 'Activo' },
+    profileImage: { type: String, default: 'default_profile_image.png' },
+    persona_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Persona', required: true }
+}, { timestamps: true });
 
-const Usuario = db.define('Usuario', {
-    usuario_id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-        allowNull: false,
-        unique: true,
-    },
-    username: { 
-        type: DataTypes.STRING(50),
-        allowNull: false,
-        unique: true
-    },
-    password: {
-        type: DataTypes.STRING(100),
-        allowNull: false
-    },
-    rol: {
-        type: DataTypes.ENUM('admin', 'ventas', 'soporte', 'bodega'),
-        allowNull: false
-    },
-    estado: {
-    type: DataTypes.ENUM('Activo', 'Inactivo', 'Bloqueado'),
-    allowNull: false,
-    defaultValue: 'Activo'
-    },
-    profileImage: {
-        type: DataTypes.STRING(255),
-        allowNull: false,
-        defaultValue: 'default_profile_image.png'
-    },
-    persona_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-        model: 'personas',
-        key: 'persona_id'
-    }
-},
-}, {
-    tableName: 'usuarios',
-    timestamps: true
-});
-
-
-module.exports = Usuario;
+module.exports = mongoose.model('Usuario', usuarioSchema);
