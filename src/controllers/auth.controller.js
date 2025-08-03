@@ -51,14 +51,37 @@ const login = async (req, res) => {
 
     const { username, password } = req.body;
     try {
-        const user = await Usuario.findOne({ where: { username } });
+        // Incluir datos de la persona relacionada para el token
+        const user = await Usuario.findOne({ 
+            where: { username },
+            include: [{
+                model: Persona,
+                attributes: ['primerNombre', 'primerApellido', 'email']
+            }]
+        });
+        
         if (!user) return res.status(404).json({ msg: "Usuario no encontrado" });
+
+        // Verificar que el usuario esté activo
+        if (user.estado !== 'Activo') {
+            return res.status(401).json({ msg: "Usuario inactivo o bloqueado" });
+        }
 
         const valid = await verifyPassword(password, user.password);
         if (!valid) return res.status(401).json({ msg: "Contraseña incorrecta" });
 
         const token = generateToken(user);
-        res.json({ token });
+        
+        // Respuesta más completa
+        res.json({ 
+            token,
+            user: {
+                usuario_id: user.usuario_id,
+                username: user.username,
+                rol: user.rol,
+                estado: user.estado
+            }
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
         console.log(error);
