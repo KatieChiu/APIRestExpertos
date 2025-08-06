@@ -2,7 +2,8 @@ const Persona = require('../models/persona');
 
 const createPersona = async (req, res) => {
     try {
-        const newPersona = await Persona.create(req.body);
+        const newPersona = new Persona(req.body);
+        await newPersona.save();
         return res.status(201).json({
             success: true,
             message: 'Persona creada exitosamente',
@@ -15,25 +16,25 @@ const createPersona = async (req, res) => {
             error: error.message
         });
     }
-}
+};
 
 const updatePersona = async (req, res) => {
     try {
-        const { numeroIdentificacion } = req.params;
-        const [updated] = await Persona.update(req.body, {
-            where: { numeroIdentificacion }
-        });
-
-        if (updated === 0) {
+        const persona = await Persona.findOneAndUpdate(
+            { numeroIdentificacion: req.params.numeroIdentificacion },
+            req.body,
+            { new: true }
+        );
+        if (!persona) {
             return res.status(404).json({
                 success: false,
                 message: 'Persona no encontrada'
             });
         }
-
         return res.status(200).json({
             success: true,
-            message: 'Persona actualizada exitosamente'
+            message: 'Persona actualizada exitosamente',
+            data: persona
         });
     } catch (error) {
         return res.status(400).json({
@@ -42,11 +43,11 @@ const updatePersona = async (req, res) => {
             error: error.message
         });
     }
-};  
+};
 
 const getAllPersonas = async (req, res) => {
     try {
-        const personas = await Persona.findAll();
+        const personas = await Persona.find();
         return res.status(200).json({
             success: true,
             data: personas
@@ -58,22 +59,17 @@ const getAllPersonas = async (req, res) => {
             error: error.message
         });
     }
-}
+};
 
 const getPersonaById = async (req, res) => {
     try {
-        const { numeroIdentificacion } = req.params;
-        const persona = await Persona.findOne({
-            where: { numeroIdentificacion }
-        });
-
+        const persona = await Persona.findOne({ numeroIdentificacion: req.params.numeroIdentificacion });
         if (!persona) {
             return res.status(404).json({
                 success: false,
                 message: 'Persona no encontrada'
             });
         }
-
         return res.status(200).json({
             success: true,
             data: persona
@@ -89,18 +85,13 @@ const getPersonaById = async (req, res) => {
 
 const deletePersona = async (req, res) => {
     try {
-        const { numeroIdentificacion } = req.params;
-        const deleted = await Persona.destroy({
-            where: { numeroIdentificacion }
-        });
-
-        if (deleted === 0) {
+        const persona = await Persona.findOneAndDelete({ numeroIdentificacion: req.params.numeroIdentificacion });
+        if (!persona) {
             return res.status(404).json({
                 success: false,
                 message: 'Persona no encontrada'
             });
         }
-
         return res.status(200).json({
             success: true,
             message: 'Persona eliminada exitosamente'
@@ -112,13 +103,6 @@ const deletePersona = async (req, res) => {
             error: error.message
         });
     }
-};  
-
-
-module.exports = {
-    createPersona,
-    updatePersona,
-    getAllPersonas,
-    getPersonaById,
-    deletePersona
 };
+
+module.exports = { createPersona, updatePersona, getAllPersonas, getPersonaById, deletePersona };

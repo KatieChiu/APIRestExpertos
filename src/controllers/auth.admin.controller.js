@@ -3,28 +3,31 @@ const Persona = require('../models/persona');
 const { hashPassword } = require('../utils/argon');
 const { validationResult } = require('express-validator');
 
-const registrarUsuario= async (req, res) => {
+const registrarUsuario = async (req, res) => {
     const errores = validationResult(req);
     if (!errores.isEmpty()) {
         return res.status(400).json({ errores: errores.array() });
     }
 
     try {
-        const { primerNombre, segundoNombre, primerApellido, segundoApellido, numeroIdentificacion, telefono, email, estadoCivil, sexo, direccion, username, password, rol } = req.body;
+        const { primerNombre, segundoNombre, primerApellido, segundoApellido, numeroIdentificacion,
+            telefono, email, estadoCivil, sexo, direccion, username, password, rol } = req.body;
 
-        const persona = await Persona.create({
+        const persona = new Persona({
             primerNombre, segundoNombre, primerApellido, segundoApellido,
             numeroIdentificacion, telefono, email, estadoCivil, sexo, direccion
         });
+        await persona.save();
 
         const hashedPassword = await hashPassword(password);
 
-        const usuario = await Usuario.create({
+        const usuario = new Usuario({
             username,
             password: hashedPassword,
             rol,
-            persona_id: persona.id
+            persona_id: persona._id
         });
+        await usuario.save();
 
         res.status(201).json({
             mensaje: 'Usuario registrado correctamente',
@@ -36,4 +39,4 @@ const registrarUsuario= async (req, res) => {
     }
 };
 
-module.exports = { registrarUsuario};
+module.exports = { registrarUsuario };

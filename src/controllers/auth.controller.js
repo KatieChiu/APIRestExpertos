@@ -1,17 +1,16 @@
-// src/controllers/auth.controller.js
 const { validationResult } = require("express-validator");
 const Usuario = require("../models/users");
 const Persona = require("../models/persona");
 const { hashPassword, verifyPassword } = require("../utils/argon");
 const generateToken = require("../utils/generateToken");
-const argon = require('argon2'); // Asegúrate de tener argon2 instalado
+const argon = require('argon2');
 
 async function crearUsuarioMaestro() {
   try {
-    // Verifica si ya existe el usuario maestro
+    // Verifica si ya existe el usuario maestro (usando sintaxis Sequelize correcta)
     const existe = await Usuario.findOne({ where: { username: 'admin' } });
     if (!existe) {
-      // Crea la persona
+      // Crea la persona usando Sequelize
       const persona = await Persona.create({
         primerNombre: 'Admin',
         segundoNombre: '',
@@ -25,11 +24,15 @@ async function crearUsuarioMaestro() {
         direccion: ''
       });
 
-      // Crea el usuario asociado a la persona
+      // Crea el usuario asociado a la persona usando Sequelize
       await Usuario.create({
-        usuario_id: 1, // Asegúrate de que este ID no cause conflictos
         username: 'admin',
-        password: await argon.hash('admin123', { type: argon.argon2id, memoryCost: 2 ** 16, timeCost: 4, parallelism: 1 }), // Cambia la contraseña si lo deseas
+        password: await argon.hash('admin123', { 
+          type: argon.argon2id, 
+          memoryCost: 2 ** 16, 
+          timeCost: 4, 
+          parallelism: 1 
+        }),
         rol: 'admin',
         estado: 'Activo',
         persona_id: persona.persona_id // Relación con la persona creada
@@ -42,53 +45,58 @@ async function crearUsuarioMaestro() {
   }
 }
 
-// Login
 const login = async (req, res) => {
-    const errores = validationResult(req);
-    if (!errores.isEmpty()) {
-        return res.status(400).json({ errores: errores.array() });
+  const errores = validationResult(req);
+  if (!errores.isEmpty()) {
+    return res.status(400).json({ errores: errores.array() });
+  }
+
+  const { username, password } = req.body;
+  try {
+    // Incluir datos de la persona relacionada para el token (sintaxis Sequelize)
+    const user = await Usuario.findOne({ 
+      where: { username },
+      include: [{
+        model: Persona,
+        attributes: ['primerNombre', 'primerApellido', 'email']
+      }]
+    });
+    
+    if (!user) return res.status(404).json({ msg: "Usuario no encontrado" });
+
+    // Verificar que el usuario esté activo
+    if (user.estado !== 'Activo') {
+      return res.status(401).json({ msg: "Usuario inactivo o bloqueado" });
     }
 
-    const { username, password } = req.body;
-    try {
-        // Incluir datos de la persona relacionada para el token
-        const user = await Usuario.findOne({ 
-            where: { username },
-            include: [{
-                model: Persona,
-                attributes: ['primerNombre', 'primerApellido', 'email']
-            }]
-        });
-        
-        if (!user) return res.status(404).json({ msg: "Usuario no encontrado" });
+    const valid = await verifyPassword(password, user.password);
+    if (!valid) return res.status(401).json({ msg: "Contraseña incorrecta" });
 
-        // Verificar que el usuario esté activo
-        if (user.estado !== 'Activo') {
-            return res.status(401).json({ msg: "Usuario inactivo o bloqueado" });
-        }
-
-        const valid = await verifyPassword(password, user.password);
-        if (!valid) return res.status(401).json({ msg: "Contraseña incorrecta" });
-
-        const token = generateToken(user);
-        
-        // Respuesta más completa
-        res.json({ 
-            token,
-            user: {
-                usuario_id: user.usuario_id,
-                username: user.username,
-                rol: user.rol,
-                estado: user.estado
-            }
-        });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-        console.log(error);
-    }
+    const token = generateToken(user);
+    
+    // Respuesta completa con información del usuario y persona
+    res.json({ 
+      token,
+      user: {
+        usuario_id: user.usuario_id,
+        username: user.username,
+        rol: user.rol,
+        estado: user.estado,
+        // Incluir datos de la persona si están disponibles
+        persona: user.Persona ? {
+          primerNombre: user.Persona.primerNombre,
+          primerApellido: user.Persona.primerApellido,
+          email: user.Persona.email
+        } : null
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+    console.log(error);
+  }
 };
 
 module.exports = {
-    crearUsuarioMaestro,
-    login
+  crearUsuarioMaestro,
+  login
 };
