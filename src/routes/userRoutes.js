@@ -33,8 +33,8 @@ const { handleValidationErrors } = require('../middlewares/validationMiddleware'
  *     User:
  *       type: object
  *       properties:
- *         usuario_id:
- *           type: integer
+ *         _id:
+ *           type: string
  *           description: ID único del usuario
  *         username:
  *           type: string

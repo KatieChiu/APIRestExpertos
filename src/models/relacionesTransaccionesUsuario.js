@@ -1,44 +1,40 @@
-// Manejo de Relaciones con las trasnsacciones del usuario
+const { Usuario, Venta, OrdenCompra } = require("../models");
 
-const Usuario = require('./users');
-const Venta = require('./venta');
-const OrdenCompra = require('./ordenCompra');
-const Producto = require('./producto');
-const CategoriaProducto = require('./categoriaProducto');
 
-// Usuario tiene muchas ventas
-Usuario.hasMany(Venta, {
-  foreignKey: 'usuario_id',
-  as: 'ventas'
-});
-Venta.belongsTo(Usuario, {
-  foreignKey: 'usuario_id',
-  as: 'usuario'
-});
 
-// Usuario tiene muchas ordenes de compra
-Usuario.hasMany(OrdenCompra, {
-  foreignKey: 'usuario_id',
-  as: 'compras'
-});
-OrdenCompra.belongsTo(Usuario, {
-  foreignKey: 'usuario_id',
-  as: 'usuario'
-});
+const obtenerHistorialUsuario = async (req, res) => {
+  try {
+    const { id } = req.params;
 
-OrdenCompra.belongsTo(Usuario, {
-  foreignKey: 'usuario_id',
-  onDelete: 'CASCADE',
-  onUpdate: 'CASCADE'
-});
 
-// Relación entre Producto y CategoriaProducto
-Producto.belongsTo(CategoriaProducto, {
-  foreignKey: 'categoria_id',
-  as: 'categoria'
-});
+    // Usuario desde Mongo
+    const usuario = await Usuario.findById(id).populate("persona_id").select("-password");
+    if (!usuario) {
+      return res.status(404).json({ success: false, message: "Usuario no encontrado" });
+    }
 
-CategoriaProducto.hasMany(Producto, {
-  foreignKey: 'categoria_id',
-  as: 'productos'
-});
+    // Ventas desde MySQL
+    const ventas = await Venta.findAll({ where: { usuario_id: id } });
+
+
+    // Compras desde MySQL
+    const compras = await OrdenCompra.findAll({ where: { usuario_id: id } });
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        usuario,
+        ventas,
+        compras,
+      },
+    });
+  } catch (error) {
+    console.error("Error en historial de usuario:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error al obtener historial del usuario",
+      error: error.message,
+    });
+  }
+};
+
