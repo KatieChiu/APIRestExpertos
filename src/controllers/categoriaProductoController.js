@@ -9,15 +9,33 @@ exports.crearCategoria = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         const mensajes = errors.array().map(error => error.msg);
-        console.log(mensajes); 
+        console.log("Errores de validación:", mensajes); 
         return res.status(400).json({ mensaje: "Errores de validación", errores: mensajes });
     }
 
     try {
         const nuevaCategoria = await CategoriaProducto.create(req.body);
-        res.status(201).json({ mensaje: "Categoría creada", data: nuevaCategoria });
+        console.log("Categoría creada exitosamente:", nuevaCategoria);
+        res.status(201).json({ mensaje: "Categoría creada exitosamente", data: nuevaCategoria });
     } catch (error) {
-        res.status(500).json({ mensaje: "Error al crear la categoría", error });
+        console.error("Error al crear categoría:", error);
+        
+        // Manejo específico de errores de Sequelize
+        if (error.name === 'SequelizeUniqueConstraintError') {
+            return res.status(400).json({ 
+                mensaje: "Error: El ID de categoría o nombre ya existe en la base de datos" 
+            });
+        } else if (error.name === 'SequelizeValidationError') {
+            return res.status(400).json({ 
+                mensaje: "Error de validación en la base de datos", 
+                detalles: error.errors 
+            });
+        } else {
+            return res.status(500).json({ 
+                mensaje: "Error interno del servidor al crear la categoría", 
+                error: error.message 
+            });
+        }
     }
 };
 
@@ -73,18 +91,33 @@ exports.actualizarCategoria = async (req, res) => {
 //DELETE
 
 exports.eliminarCategoria = async (req, res) => {
-    const { categoria_id } = req.params;
-    if (!categoria_id) {
-        return res.status(400).json({ mensaje: "El categoria_id es obligatorio" });
+    console.log('🗑️ Parámetros recibidos:', req.params);
+    console.log('🗑️ Body recibido:', req.body);
+    
+    const { id } = req.params;
+    console.log('🗑️ ID extraído:', id);
+    console.log('🗑️ Tipo de ID:', typeof id);
+    
+    if (!id) {
+        console.log('❌ ID no encontrado en parámetros');
+        return res.status(400).json({ mensaje: "El ID de la categoría es obligatorio" });
     }
 
     try {
-        const categoria = await CategoriaProducto.findOne({ where: { categoria_id } });
-        if (!categoria) return res.status(404).json({ mensaje: "Categoría no encontrada" });
-
+        console.log('🔍 Buscando categoría con ID:', id);
+        const categoria = await CategoriaProducto.findOne({ where: { categoria_id: id } });
+        
+        if (!categoria) {
+            console.log('❌ Categoría no encontrada');
+            return res.status(404).json({ mensaje: "Categoría no encontrada" });
+        }
+        
+        console.log('✅ Categoría encontrada:', categoria.categoria_id);
         await categoria.destroy();
+        console.log('✅ Categoría eliminada exitosamente');
         res.json({ mensaje: "Categoría eliminada correctamente" });
     } catch (error) {
-        res.status(500).json({ mensaje: "Error al eliminar la categoría", error });
+        console.error('💥 Error al eliminar categoría:', error);
+        res.status(500).json({ mensaje: "Error al eliminar la categoría", error: error.message });
     }
 };

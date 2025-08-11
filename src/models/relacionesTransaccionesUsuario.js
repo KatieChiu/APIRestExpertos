@@ -3,6 +3,8 @@
 const Usuario = require('./users');
 const Venta = require('./venta');
 const OrdenCompra = require('./ordenCompra');
+const Producto = require('./producto');
+const CategoriaProducto = require('./categoriaProducto');
 
 // Usuario tiene muchas ventas
 Usuario.hasMany(Venta, {
@@ -28,4 +30,15 @@ OrdenCompra.belongsTo(Usuario, {
   foreignKey: 'usuario_id',
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE'
+});
+
+// Relación entre Producto y CategoriaProducto
+Producto.belongsTo(CategoriaProducto, {
+  foreignKey: 'categoria_id',
+  as: 'categoria'
+});
+
+CategoriaProducto.hasMany(Producto, {
+  foreignKey: 'categoria_id',
+  as: 'productos'
 });

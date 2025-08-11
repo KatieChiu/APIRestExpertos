@@ -187,6 +187,7 @@ router.get('/:codigo', productoController.obtenerProductoPorId);
  *         description: Error de validación
  */
 router.put('/:codigo',
+    uploadImagenProducto.single('imagen'),
     body('nombre')
         .optional()
         .notEmpty().withMessage('El nombre es obligatorio si se proporciona')
