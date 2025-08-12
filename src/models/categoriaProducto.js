@@ -2,12 +2,11 @@
 const { DataTypes } = require('sequelize'); 
 const db = require('../configuration/db'); 
 //const Producto = require('./producto');
-const express = require('express');
 
 const CategoriaProducto = db.define('CategoriaProducto', {
  
     categoria_id: { 
-        type: DataTypes.STRING(50),
+        type: DataTypes.STRING(10),
         primaryKey: true,
         allowNull: false,
         unique: true,

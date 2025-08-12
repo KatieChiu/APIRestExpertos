@@ -160,13 +160,13 @@ router.put('/:id',
 
 /**
  * @swagger
- * /categoria/{categoria_id}:
+ * /categoria/{id}:
  *   delete:
  *     summary: Elimina una categoría por ID
  *     tags: [Categorias]
  *     parameters:
  *       - in: path
- *         name: categoria_id
+ *         name: id
  *         required: true
  *         schema:
  *           type: string
@@ -181,9 +181,9 @@ router.put('/:id',
  *       404:
  *         description: Categoría no encontrada
  */
-router.delete('/:categoria_id',
-    param('categoria_id')
-        .notEmpty().withMessage('La categoria_id es obligatoria')
+router.delete('/:id',
+    param('id')
+        .notEmpty().withMessage('El ID de la categoría es obligatorio')
         .isLength({ max: 10, min: 5 }).withMessage('El código debe tener entre 5 y 10 caracteres'),
     categoriaController.eliminarCategoria
 );
