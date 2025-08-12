@@ -2,9 +2,9 @@ const { Sequelize } = require('sequelize'); // Importa Sequelize correctamente
 require('dotenv').config();
 
 const db = new Sequelize( // Creamos una nueva instancia de sequelize
-   process.env.bd,// Nombre de la base de datos
-   process.env.bdusuario, // Usuario
-   process.env.bdcontra, // Contraseña
+   "DATAFERRE",// Nombre de la base de datos
+   "sistemas", // Usuario
+   "Sistemas123.", // Contraseña
    {
        host: 'localhost',
        dialect: 'mysql',

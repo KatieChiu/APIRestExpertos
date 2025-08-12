@@ -15,7 +15,7 @@ const MovimientoCaja = require('./movimiento');
 
 // Mongoose (para Persona y Usuario)
 const mongoose = require('mongoose');
-mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/miapp', {
+mongoose.connect(process.env.MONGO_URI || 'mongodb+srv://djackyrcalix:Sofaja1850@testingcluster.zby1pdw.mongodb.net/miapp', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });

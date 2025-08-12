@@ -43,10 +43,7 @@ const OrdenCompra = db.define('OrdenCompra', {
     }
   },
   
-  idUsuario: {
-    type: DataTypes.STRING,  
-    allowNull: false
-  }
+  
 
 }, {
   tableName: 'ordencompra',

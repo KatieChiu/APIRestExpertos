@@ -1,21 +1,17 @@
 const { validationResult } = require('express-validator');
-const ordenCompra = require('../models/ordenCompra'); // mayúscula para modelo
-const OrdenCompraDetalle = require('../models/ordenCompraDetalle'); // modelo detalle
-const MovimientoCaja = require('../models/movimiento'); // modelo de movimiento de caja
-const Producto = require('../models/producto'); // modelo de producto
-const Proveedor = require('../models/proveedor'); // modelo de proveedor
-
-const usuario= require('../models/users'); // modelo de usuario
-
-
-const db = require('../configuration/db'); // para transacciones
-const {EnviarCorreo} = require("../configuration/correo");// función para enviar correos
+const ordenCompra = require('../models/ordenCompra'); 
+const OrdenCompraDetalle = require('../models/ordenCompraDetalle'); 
+const MovimientoCaja = require('../models/movimiento'); 
+const Producto = require('../models/producto'); 
+const Proveedor = require('../models/proveedor'); 
+const db = require('../configuration/db'); 
+const { EnviarCorreo } = require("../configuration/correo");
 require('dotenv').config();
 
 exports.listar = async (req, res) => {
   try {
     const ordenes = await ordenCompra.findAll({
-      include: [{ model: OrdenCompraDetalle }] // opcional, si quieres detalles
+      include: [{ model: OrdenCompraDetalle }]
     });
     res.json(ordenes);
   } catch (error) {
@@ -29,14 +25,16 @@ exports.guardar = async (req, res) => {
   if (!errores.isEmpty()) {
     return res.status(400).json(errores.array());
   }
-  const { usuario_id, numero_orden, fecha_emision, fecha_entrega_esperada, estado, observaciones, proveedor_id, detalles } = req.body;
- if (!usuario_id) {
-    return res.status(401).json({ error: "Usuario no autenticado" });
-  }
-  const user = await usuario.findByPk(usuario_id);
-  if (!user) {
-    return res.status(404).json({ error: "Usuario no encontrado" });
-  }
+  
+  const {
+    numero_orden,
+    fecha_emision,
+    fecha_entrega_esperada,
+    estado,
+    observaciones,
+    proveedor_id,
+    detalles
+  } = req.body;
 
   const t = await db.transaction();
   try {
@@ -70,8 +68,7 @@ exports.guardar = async (req, res) => {
       total,
       estado,
       observaciones,
-      proveedor_id,
-      usuario_id
+      proveedor_id
     }, { transaction: t });
 
     for (const detalle of detalles) {
@@ -93,7 +90,6 @@ exports.guardar = async (req, res) => {
 
     await t.commit();
 
-    // ENVIAR CORREO DESPUÉS DEL COMMIT (fuera de la transacción)
     const proveedor = await Proveedor.findByPk(proveedor_id);
     console.log("Intentando enviar correo a proveedor...");
     console.log("Proveedor:", proveedor?.email);
@@ -125,7 +121,6 @@ exports.guardar = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
 
 exports.editar = async (req, res) => {
   const errores = validationResult(req);

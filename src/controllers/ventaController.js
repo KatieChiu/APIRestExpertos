@@ -2,7 +2,6 @@ const Venta = require('../models/venta');
 const DetalleVenta = require('../models/detalleVenta');
 const MovimientoCaja = require('../models/movimiento');
 const Producto = require('../models/producto');
-const usuario = require('../models/users');
 const { validationResult } = require('express-validator');
 const db = require('../configuration/db');
 
@@ -19,7 +18,7 @@ exports.listar = async (req, res) => {
   }
 };
 
-// Crear nueva venta asociada al usuario autenticado
+// Crear nueva venta
 exports.guardar = async (req, res) => {
   const errores = validationResult(req);
   if (!errores.isEmpty()) {
@@ -33,20 +32,8 @@ exports.guardar = async (req, res) => {
     tipo_pago,
     descuento,
     observaciones,
-    usuario_id,
     detalles
   } = req.body;
-
-
-  if (!usuario_id) {
-    return res.status(401).json({ error: "Usuario no autenticado" });
-  }
-
-  const user = await usuario.findByPk(usuario_id);
-  if (!user) {
-    return res.status(404).json({ error: "Usuario no encontrado" });
-
-  }
 
   const t = await db.transaction();
 
@@ -80,8 +67,7 @@ exports.guardar = async (req, res) => {
       total,
       estado,
       tipo_pago,
-      observaciones,
-      usuario_id // ← Asociar al usuario logueado
+      observaciones
     }, { transaction: t });
 
     // Guardar detalles y actualizar stock
@@ -121,7 +107,6 @@ exports.guardar = async (req, res) => {
   }
 };
 
-
 // Eliminar una venta y devolver stock
 exports.eliminar = async (req, res) => {
   const { numero_factura } = req.params;
@@ -129,11 +114,11 @@ exports.eliminar = async (req, res) => {
   const t = await db.transaction();
 
   try {
-      const venta = await Venta.findByPk(numero_factura, {
+    const venta = await Venta.findByPk(numero_factura, {
       include: DetalleVenta,
       transaction: t
     });
-      console.log("Venta encontrada:", venta);
+    console.log("Venta encontrada:", venta);
     if (!venta) return res.status(404).json({ error: "Venta no encontrada" });
 
     for (const detalle of venta.DetalleVenta) {

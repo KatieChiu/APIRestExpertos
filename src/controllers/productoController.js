@@ -38,19 +38,10 @@ exports.crearProducto = async (req, res) => {
 
 exports.obtenerProductos = async (req, res) => {
     try {
-        // Luego obtenemos con include
-        const productos = await Producto.findAll({ 
-            include: [{
-                model: CategoriaProducto,
-                as: 'categoria',
-                attributes: ['categoria_id', 'nombre', 'descripcion']
-            }]
-        });
-        
+        const productos = await Producto.findAll({ include: CategoriaProducto });
         res.json(productos);
     } catch (error) {
-        console.error('Error al obtener productos:', error);
-        res.status(500).json({ mensaje: "Error al obtener productos", error: error.message });
+        res.status(500).json({ mensaje: "Error al obtener productos", error });
     }
 };
 
@@ -58,19 +49,12 @@ exports.obtenerProductos = async (req, res) => {
 //READ (uno)
 exports.obtenerProductoPorId = async (req, res) => {
     try {
-        const producto = await Producto.findByPk(req.params.codigo, { 
-            include: [{
-                model: CategoriaProducto,
-                as: 'categoria',
-                attributes: ['categoria_id', 'nombre', 'descripcion']
-            }]
-        });
+        const producto = await Producto.findByPk(req.params.codigo, { include: CategoriaProducto });
 
         if (!producto) return res.status(404).json({ mensaje: "No encontrado" });
         res.json(producto);
     } catch (error) {
-        console.error('Error al buscar producto:', error);
-        res.status(500).json({ mensaje: "Error al buscar producto", error: error.message });
+        res.status(500).json({ mensaje: "Error al buscar producto", error });
     }
 };
 
@@ -93,20 +77,9 @@ exports.actualizarProducto = async (req, res) => {
             }
         }
 
-        // Si se subió una nueva imagen, actualizar el campo imagen
-        if (req.file) {
-            req.body.imagen = '/uploads/imagenes-productos/' + req.file.filename;
-        }
-
-        // Filtrar campos undefined o null para evitar errores en la actualización
-        const camposActualizar = {};
-        Object.keys(req.body).forEach(key => {
-            if (req.body[key] !== undefined && req.body[key] !== null && req.body[key] !== '') {
-                camposActualizar[key] = req.body[key];
-            }
+        await producto.update(req.body, {
+            fields: Object.keys(req.body)
         });
-
-        await producto.update(camposActualizar);
         res.json({ mensaje: "Producto actualizado correctamente", data: producto });
     } catch (error) {
         console.error("Error al actualizar producto:", error);
@@ -121,9 +94,6 @@ exports.actualizarProducto = async (req, res) => {
 };
 
 exports.eliminarProductoPorCodigo = async (req, res) => {
-    console.log('🗑️ Parámetros recibidos:', req.params);
-    console.log('🗑️ Body recibido:', req.body);
-    
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         const mensajes = errors.array().map(error => error.msg);
@@ -131,24 +101,13 @@ exports.eliminarProductoPorCodigo = async (req, res) => {
     }
 
     const { codigo } = req.params;
-    console.log('🗑️ Código extraído:', codigo);
-    console.log('🗑️ Tipo de código:', typeof codigo);
-    
     try {
-        console.log('🔍 Buscando producto con código:', codigo);
         const producto = await Producto.findOne({ where: { codigo } });
-        
-        if (!producto) {
-            console.log('❌ Producto no encontrado');
-            return res.status(404).json({ mensaje: "No encontrado" });
-        }
-        
-        console.log('✅ Producto encontrado:', producto.codigo);
+        if (!producto) return res.status(404).json({ mensaje: "No encontrado" });
+
         await producto.destroy();
-        console.log('✅ Producto eliminado exitosamente');
         res.json({ mensaje: "Producto eliminado correctamente" });
     } catch (error) {
-        console.error('💥 Error al eliminar producto:', error);
         res.status(500).json({ mensaje: "Error al eliminar producto", error: error.message });
     }
 };

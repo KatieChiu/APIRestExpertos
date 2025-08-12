@@ -43,11 +43,7 @@ const Venta = db.define('Venta', {
     observaciones: {
         type: DataTypes.TEXT
     },
-    usuario_id: {
-        type: DataTypes.STRING,  // Cambiamos a STRING para almacenar ObjectId de MongoDB
-        allowNull: false
-        // Eliminamos la referencia porque usuarios está en MongoDB, no en MySQL
-    },
+    
 }, {
     tableName: 'ventas',
     timestamps: true
