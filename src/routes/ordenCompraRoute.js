@@ -66,11 +66,9 @@ router.get('/', controlador.listar);
  *                 type: integer
  *               observaciones:
  *                 type: string
- *               usuario_id:
- *                 type: integer    
- *               observaciones:
- *                 type: string
- *               detalles:
+*               usuario_id:
+*                 type: integer
+*               detalles:
  *                 type: array
  *                 items:
  *                   type: object
