@@ -35,7 +35,7 @@ const { handleValidationErrors } = require('../middlewares/validationMiddleware'
  *       properties:
  *         _id:
  *           type: string
- *           description: ID único del usuario
+ *           description: ID único del usuario (MongoDB ObjectId)
  *         username:
  *           type: string
  *           description: Nombre de usuario único
@@ -54,8 +54,8 @@ const { handleValidationErrors } = require('../middlewares/validationMiddleware'
  *           type: string
  *           description: Nombre de archivo de la imagen de perfil del usuario
  *         persona_id:
- *           type: integer
- *           description: ID de la persona asociada al usuario
+ *           type: string
+ *           description: ID de la persona asociada al usuario (MongoDB ObjectId)
  *         createdAt:
  *           type: string
  *           format: date-time
@@ -105,8 +105,8 @@ const { handleValidationErrors } = require('../middlewares/validationMiddleware'
  *                 format: binary
  *                 description: Imagen de perfil del usuario (opcional)
  *               persona_id:
- *                 type: integer
- *                 description: ID de la persona asociada al usuario
+ *                 type: string
+ *                 description: ID de la persona asociada al usuario (MongoDB ObjectId)
  *     responses:
  *       201:
  *         description: Usuario creado exitosamente
@@ -120,7 +120,19 @@ const { handleValidationErrors } = require('../middlewares/validationMiddleware'
  *         description: Usuario ya existe
  */
 
-router.post('/', uploadImagenUsuario.single('profileImage'), validateCreateUser, handleValidationErrors, createUser);
+router.post(
+  '/',
+  uploadImagenUsuario.single('profileImage'),
+  [
+    // Validaciones actualizadas
+    require('express-validator').check('username', 'El nombre de usuario es obligatorio').not().isEmpty(),
+    require('express-validator').check('password', 'La contraseña es obligatoria').not().isEmpty(),
+    require('express-validator').check('rol', 'El rol es obligatorio').not().isEmpty(),
+    require('express-validator').check('persona_id', 'El ID de persona debe ser un ObjectId válido de MongoDB').isMongoId()
+  ],
+  handleValidationErrors,
+  createUser
+);
 
 /**
  * @swagger
@@ -166,7 +178,7 @@ router.post('/', uploadImagenUsuario.single('profileImage'), validateCreateUser,
  *                 type: string
  *                 description: Nombre de archivo de la imagen de perfil (opcional)
  *               persona_id:
- *                 type: integer
+ *                 type: string
  *                 description: ID de la persona asociada al usuario
  *     responses:
  *       200:
@@ -181,7 +193,15 @@ router.post('/', uploadImagenUsuario.single('profileImage'), validateCreateUser,
  *         description: Usuario no encontrado
  */
 
-router.put('/:id', validateUpdateUser, handleValidationErrors, updateUser);
+router.put(
+  '/:id',
+  [
+    require('express-validator').check('id', 'El ID de usuario debe ser un ObjectId válido de MongoDB').isMongoId(),
+  ],
+  validateUpdateUser,
+  handleValidationErrors,
+  updateUser
+);
 
 /**
  * @swagger
@@ -230,7 +250,13 @@ router.get('/', getAllUsers);
  *         description: Usuario no encontrado
  */
 
-router.get('/:id', getUserById);
+router.get(
+  '/:id',
+  [
+    require('express-validator').check('id', 'El ID de usuario debe ser un ObjectId válido de MongoDB').isMongoId()
+  ],
+  getUserById
+);
 
 /**
  * @swagger
@@ -254,7 +280,13 @@ router.get('/:id', getUserById);
  *         description: Usuario no encontrado
  */
 
-router.delete('/:id', deleteUser);
+router.delete(
+  '/:id',
+  [
+    require('express-validator').check('id', 'El ID de usuario debe ser un ObjectId válido de MongoDB').isMongoId()
+  ],
+  deleteUser
+);
 
 /**
  * @swagger
@@ -297,6 +329,12 @@ router.delete('/:id', deleteUser);
  *         description: Usuario no encontrado
  */
 
-router.get('/:id/historial', obtenerHistorialUsuario);
+router.get(
+  '/:id/historial',
+  [
+    require('express-validator').check('id', 'El ID de usuario debe ser un ObjectId válido de MongoDB').isMongoId()
+  ],
+  obtenerHistorialUsuario
+);
 
 module.exports = router;

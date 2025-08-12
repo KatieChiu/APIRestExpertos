@@ -44,12 +44,9 @@ const Venta = db.define('Venta', {
         type: DataTypes.TEXT
     },
     usuario_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'usuarios', 
-            key: 'usuario_id'
-        }
+        type: DataTypes.STRING,  // Cambiamos a STRING para almacenar ObjectId de MongoDB
+        allowNull: false
+        // Eliminamos la referencia porque usuarios está en MongoDB, no en MySQL
     },
 }, {
     tableName: 'ventas',

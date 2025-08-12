@@ -16,7 +16,7 @@ const validateCreateUser = [
     
     body('persona_id')
         .notEmpty().withMessage('El ID de persona es requerido')
-        .isInt({ min: 1 }).withMessage('El ID de persona debe ser un número entero positivo')
+        .isMongoId().withMessage('El ID de persona debe ser un ID de MongoDB válido')
 ];
 
 const validateUpdateUser = [
